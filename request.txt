@@ -1,0 +1,7 @@
+Installing collected packages: soupsieve, beautifulsoup4, google
+Successfully installed beautifulsoup4-4.13.4 google-3.0.0 soupsieve-2.7
+
+camel-0.2.59
+
+Installing collected packages: uritemplate, pyparsing, pyasn1, protobuf, grpcio, cachetools, rsa, pyasn1-modules, proto-plus, httplib2, googleapis-common-protos, grpcio-status, google-auth, google-auth-httplib2, google-api-core, google-api-python-client, google-ai-generativelanguage, google-generativeai
+Successfully installed cachetools-5.5.2 google-ai-generativelanguage-0.6.15 google-api-core-2.25.0rc1 google-api-python-client-2.170.0 google-auth-2.40.2 google-auth-httplib2-0.2.0 google-generativeai-0.8.5 googleapis-common-protos-1.70.0 grpcio-1.71.0 grpcio-status-1.71.0 httplib2-0.22.0 proto-plus-1.26.1 protobuf-5.29.4 pyasn1-0.6.1 pyasn1-modules-0.4.2 pyparsing-3.2.3 rsa-4.9.1 uritemplate-4.1.1

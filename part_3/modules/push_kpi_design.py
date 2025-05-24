@@ -12,6 +12,44 @@ def define_kpi_framework_and_reporting(
 ) -> dict:
     """
     定义详细的KPI框架、分析维度和报告模板建议。
+    
+    这里采取MCP，自己搜索相关的可行的API参数有哪些，根据平台关键词
+    
+    
+    
+    eg:
+    initial_kpi_framework_data = {
+        "primary_goals_list_str": "['提升品牌在线知名度', '增强用户社群活跃度']", # String representation of a list
+        "secondary_goals_list_str": "['为官方网站引流', '收集潜在用户反馈']", # String representation of a list
+        "suggested_key_metrics_awareness_list_str": "['总曝光量', '品牌提及增长率']",
+        "suggested_key_metrics_engagement_list_str": "['平均互动率', 'UGC产出数量']",
+        "measurement_period_suggestion_str": "月度追踪，季度复盘"
+    }
+    editorial_calendar_data = {
+        "calendar_name_str": "Q3 2025 内容营销日历",
+        "key_themes_list_str": "['夏日新品系列', '用户故事征集', '行业趋势解读']",
+        "major_campaigns_list": [ # List of dictionaries
+            {
+                "campaign_name_str": "夏日焕新挑战赛",
+                "duration_str": "2025-07-01 to 2025-07-31",
+                "goal_str": "提升新品认知度与用户原创内容量",
+                "target_platforms_list_str": "['小红书', '抖音']",
+                "specific_kpi_focus_list_str": "['活动话题提及量', 'UGC作品提交数', '新品页面点击率']" # Agent 2 might suggest some focus KPIs
+            },
+            {
+                "campaign_name_str": "科技前沿直播月",
+                "duration_str": "2025-08-01 to 2025-08-31",
+                "goal_str": "树立行业专家形象，收集销售线索",
+                "target_platforms_list_str": "['B站', '微信视频号']",
+                "specific_kpi_focus_list_str": "['直播观看人次', '平均观看时长', '互动评论数', '线索转化数']"
+            }
+        ],
+        "common_content_formats_list_str": "['短视频', '图文笔记', '直播', '深度文章']",
+        "notes_str": "内容日历侧重于提升品牌活力和用户参与感。"
+    }
+    brand_marketing_objectives_str = "['在未来6个月内将目标受众中的品牌认知度提升15%', '将社交媒体渠道的用户互动总数提升25% YoY', '通过社交媒体引流实现官网访问量月均增长10%', '将品牌在核心社交平台上的粉丝基数扩大20%']"
+    
+    target_platforms = ["Weibo", "Xiaohongshu", "Douyin", "Bilibili", "WeChat Official Account"]
     """
     # initial_kpi_framework_data (输入示例): {'primary_goals_list_str': "['提升品牌知名度', '促进用户互动']", 'secondary_goals_list_str': "['引导官网流量']"}
     # editorial_calendar_data (输入示例): {'main_content_categories_list_str': "['产品介绍', '行业动态', '用户案例']", 'key_campaigns_for_tracking': [{'name': 'Q3新品推广', 'focus_kpis': ['新品提及量', '互动率']}]}
@@ -19,7 +57,7 @@ def define_kpi_framework_and_reporting(
     # target_platforms (输入示例): ['Weibo', 'Xiaohongshu', 'Douyin']
 
     print(f"模块8: 正在定义KPI框架与报告体系...")
-    platform_analytics_kb = load_knowledge_base_data("platform_analytics_capabilities.json") # 假设包含各平台典型可追踪指标
+    # platform_analytics_kb = load_knowledge_base_data("platform_analytics_capabilities.json") # 假设包含各平台典型可追踪指标
     # platform_analytics_kb_example = {
     #    "Weibo": ["Impressions", "Engagement Rate", "Follower Growth", "CTR", "转发数", "评论数", "点赞数"],
     #    "Xiaohongshu": ["曝光量", "笔记互动（赞藏评）", "粉丝数", "主页访问量"],
