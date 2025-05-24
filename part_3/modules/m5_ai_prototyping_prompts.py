@@ -8,7 +8,7 @@ def generate_ai_visual_prototyping_prompts(
     """
     为AI图像/视频工具生成文本提示 (Prompts)，用于视觉原型设计和风格探索。
     """
-    # flagship_content_creative_briefs_package (输入示例): {
+    # flagship_content_creative_briefs_package: {
     #   "brief_001_summer_campaign": {
     #     "content_title": "夏日焕新活动",
     #     "goal": "提升夏季新品销量和品牌活力形象",

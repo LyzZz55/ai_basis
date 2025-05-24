@@ -73,29 +73,6 @@ def _define_imagery_style_guide(
     }
     return imagery_guide
 
-def _define_video_style_guide(
-    brand_playbook_data: dict,
-    audience_persona_data: dict,
-    trend_research_output: dict
-) -> dict:
-    print("  模块3.4: 定义视频风格指南...")
-    # ... 详细逻辑参考阶段2大纲 ...
-    # 示例简化输出:
-    video_guide = {
-        "overall_pacing_and_mood": "短视频（如抖音、小红书）节奏明快，信息点密集；中长视频（如B站、微信视频号）可适当放缓，注重故事性和情感共鸣。",
-        "editing_style_and_transitions": "剪辑流畅自然，转场以简洁的硬切、叠化为主，避免过度花哨的效果。",
-        "on_screen_text_and_subtitles": {
-            "font_family_ref": "body_text_font", # Referencing from typography system
-            "size_suggestion_1080p": "28-36pt for subtitles",
-            "color_contrast": "确保字幕颜色与背景有高对比度，推荐使用带轻微透明度的深色底条。",
-            "placement": "画面底部安全区域内，不遮挡重要视觉信息。"
-        },
-        "music_and_sound_design": "背景音乐风格需与品牌语调和视频内容匹配，可考虑轻快、积极或专业、沉稳的纯音乐。音效用于增强关键信息或转场。",
-        "color_grading_and_luts": "视频调色应与品牌整体色彩体系和图像风格保持一致，追求自然、通透的画面质感。如有统一LUTs更佳。",
-        "branding_elements_in_video": "片头/片尾可使用动态演绎的品牌Logo；视频中可适当出现品牌色块、角标等元素，但不宜过多干扰内容。"
-    }
-    return video_guide
-
 def _define_layout_principles(
     defined_color_system: dict,
     defined_typography_system: dict,
