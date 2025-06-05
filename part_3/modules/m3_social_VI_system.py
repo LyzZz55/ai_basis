@@ -1,4 +1,11 @@
 # agent3/phase_2_vi_system_templates/module_3_social_vi_system.py
+from dotenv import load_dotenv
+import os
+from camel.agents import ChatAgent
+from camel.models import ModelFactory
+from camel.types import ModelPlatformType, ModelType
+import json
+
 # from agent3.utils_knowledge_base_manager import load_knowledge_base_data
 
 # --- Helper functions for sub-modules  ---
@@ -9,69 +16,181 @@ def _define_color_palette(
     industry_trends_data: list, # [{'trend_name': '莫兰迪色系', 'colors': ['#E0E0E0', '#BDBDBD']}]
     visual_design_principles_kb: dict
 ) -> dict:
-    print("  模块3.1: 定义色彩体系...")
-    # ... 详细逻辑参考阶段2大纲 ...
-    # 示例简化输出:
-    palette = {
-        "primary_colors": [{"name": "BrandBlue", "hex": "#0A7AFF", "rgb": "10,122,255", "cmyk": "96,52,0,0", "use_case": "Logo主色, 核心按钮"}],
-        "secondary_colors": [{"name": "SkyBlue", "hex": "#5AC8FA", "rgb": "90,200,250", "cmyk": "64,20,0,0", "use_case": "辅助图形, 背景点缀"}],
-        "accent_colors": [{"name": "BrightYellow", "hex": "#FFD60A", "rgb": "255,214,10", "cmyk": "0,16,96,0", "use_case": "强调提示, CTA"}],
-        "neutral_colors": [{"name": "LightGray", "hex": "#F2F2F7", "rgb": "242,242,247", "cmyk": "5,3,0,0", "use_case": "背景色"},
-                           {"name": "DarkText", "hex": "#1C1C1E", "rgb": "28,28,30", "cmyk": "0,0,0,88", "use_case": "正文文本"}],
-        "accessibility_notes": "主要文本与背景组合对比度已初步考虑，建议使用工具复核。"
-    }
-    # color_psychology = visual_design_principles_kb.get("color_psychology", {})
-    # if "blue" in color_psychology and "BrandBlue" in str(palette):
-    #     palette["psychology_notes"] = f"蓝色通常代表: {color_psychology['blue']}"
-    return palette
+    """
+    基于品牌现有色彩、品牌语调、受众偏好、行业趋势和设计原则，智能生成品牌色彩体系建议。
+    返回值: palette 字典，若AI返回异常则包含"error"字段。
+    """
+    print("  模块3.1: 定义色彩体系 (AI版)...")
+    system_prompt = f"""
+你是品牌视觉设计专家，请根据以下输入，智能生成适合社交媒体的品牌色彩体系建议，输出结构严格为JSON：
+{{
+  "primary_colors": [{{"name": "...", "hex": "...", "rgb": "...", "cmyk": "...", "use_case": "..."}}],
+  "secondary_colors": [...],
+  "accent_colors": [...],
+  "neutral_colors": [...],
+  "accessibility_notes": "...",
+  "psychology_notes": "..."
+}}
+输入：
+- 现有品牌主色: {existing_colors_str}
+- 品牌语调描述: {brand_tone_descriptors_str}
+- 受众视觉偏好: {audience_visual_preferences_str}
+- 行业趋势色彩: {industry_trends_data}
+- 设计原则知识: {visual_design_principles_kb.get('color_psychology', {})}
+要求：
+- 结合输入，推荐主色、辅助色、强调色、基础色，说明各自用途。
+- 给出可访问性建议（如对比度、色盲友好等）。
+- 给出色彩心理学简要说明。
+- 输出必须是完整JSON对象，字段齐全。
+"""
+    model = ModelFactory.create(
+        model_platform=ModelPlatformType.SILICONFLOW,
+        model_type='Pro/deepseek-ai/DeepSeek-V3',
+        model_config_dict={
+            "max_tokens": 2048,
+            "temperature": 0.7,
+        },
+        api_key=SF_API_KEY,
+    )
+    agent = ChatAgent(
+        system_message=system_prompt,
+        model=model,
+        message_window_size=1000,
+    )
+    usr_msg = "请根据上述输入生成色彩体系建议。"
+    try:
+        response = agent.step(usr_msg)
+        strRes = response.msgs[0].content
+        try:
+            return json.loads(strRes)
+        except json.JSONDecodeError as e:
+            return {"error": f"JSON解析错误: {e}", "raw": strRes}
+    except Exception as e:
+        return {"error": f"AI调用异常: {e}"}
 
 def _define_typography_system(
     existing_fonts_str: str, # "['思源黑体 CN Regular', 'Arial']"
     brand_playbook_data: dict, # {'brand_persona_keywords_list_str': "['科技感', '现代']"}
     multi_language_needed: bool = False
 ) -> dict:
-    print("  模块3.2: 定义字体系统...")
-    # ... 详细逻辑参考阶段2大纲 ...
-    # 示例简化输出:
-    typography = {
-        "primary_headline_font": {"family": "Montserrat", "weights_recommended": [700, 600], "style_description": "现代无衬线, 适用于数字标题"},
-        "secondary_headline_font": {"family": "Roboto Slab", "weights_recommended": [700], "style_description": "可选衬线标题, 用于特定强调或复古感"},
-        "body_text_font": {"family": "Open Sans", "weights_recommended": [400, 600], "style_description": "高易读性无衬线, 适用于正文和UI"},
-        "typographic_scale_example": [
-            {"element": "H1 (Page Title)", "font_family_ref": "primary_headline_font", "size_desktop": "32px", "size_mobile": "24px", "weight": 700, "line_height": 1.2},
-            {"element": "Paragraph", "font_family_ref": "body_text_font", "size_desktop": "16px", "size_mobile": "14px", "weight": 400, "line_height": 1.6},
-        ],
-        "licensing_notes": "Montserrat, Roboto Slab, Open Sans 均为Google Fonts开源字体，可免费商用。"
-    }
-    if multi_language_needed:
-        typography["language_support_notes"] = "所选字体对主流拉丁语系及部分CJK字符有良好支持，特殊语言需额外测试。"
-    return typography
+    """
+    基于品牌现有字体、品牌人设、是否多语言需求，智能生成品牌字体体系建议。
+    返回值: typography 字典，若AI返回异常则包含"error"字段。
+    """
+    print("  模块3.2: 定义字体系统 (AI版)...")
+    persona_keywords = brand_playbook_data.get('brand_persona_keywords_list_str', '')
+    tone_keywords = brand_playbook_data.get('brand_tone_descriptors_list_str', '')
+    system_prompt = f"""
+你是品牌视觉设计专家，请根据以下输入，智能生成适合社交媒体的品牌字体体系建议，输出结构严格为JSON：
+{{
+  "primary_headline_font": {{"family": "...", "weights_recommended": [...], "style_description": "..."}},
+  "secondary_headline_font": {{"family": "...", "weights_recommended": [...], "style_description": "..."}},
+  "body_text_font": {{"family": "...", "weights_recommended": [...], "style_description": "..."}},
+  "typographic_scale_example": [{{"element": "...", "font_family_ref": "...", "size_desktop": "...", "size_mobile": "...", "weight": ..., "line_height": ...}}],
+  "licensing_notes": "...",
+  "language_support_notes": "..."
+}}
+输入：
+- 现有品牌字体: {existing_fonts_str}
+- 品牌人设关键词: {persona_keywords}
+- 品牌语调关键词: {tone_keywords}
+- 是否需要多语言支持: {multi_language_needed}
+要求：
+- 推荐主标题、次标题、正文字体，说明各自风格与用途。
+- 给出字号、字重、行高等排版比例建议。
+- 说明字体授权情况。
+- 若multi_language_needed为True，需说明多语言支持情况。
+- 输出必须是完整JSON对象，字段齐全。
+"""
+    model = ModelFactory.create(
+        model_platform=ModelPlatformType.SILICONFLOW,
+        model_type='Pro/deepseek-ai/DeepSeek-V3',
+        model_config_dict={
+            "max_tokens": 2048,
+            "temperature": 0.7,
+        },
+        api_key=SF_API_KEY,
+    )
+    agent = ChatAgent(
+        system_message=system_prompt,
+        model=model,
+        message_window_size=1000,
+    )
+    usr_msg = "请根据上述输入生成字体体系建议。"
+    try:
+        response = agent.step(usr_msg)
+        strRes = response.msgs[0].content
+        try:
+            return json.loads(strRes)
+        except json.JSONDecodeError as e:
+            return {"error": f"JSON解析错误: {e}", "raw": strRes}
+    except Exception as e:
+        return {"error": f"AI调用异常: {e}"}
 
 def _define_imagery_style_guide(
     brand_playbook_data: dict, # {'brand_tone_descriptors_list_str': "['真实', '亲切']"}
     audience_persona_data: dict, # {'visual_preferences_keywords_list_str': "['生活化场景', '明亮色调']"}
     trend_research_output: dict # from module 2
 ) -> dict:
-    print("  模块3.3: 定义图像风格指南...")
-    # ... 详细逻辑参考阶段2大纲 ...
-    # 示例简化输出:
-    imagery_guide = {
-        "photography_style": {
-            "overall_mood": "真实、亲切、积极向上，生活化场景为主。",
-            "subject_matter": "优先展示真实用户在自然环境中使用产品的场景，或产品融入生活的美好瞬间。",
-            "composition": "构图简洁、主体突出，鼓励使用自然光，营造明亮通透的视觉感受。",
-            "color_palette_reference": "参考已定义的品牌色彩体系，整体色调和谐统一，可适当使用高光和暖调。",
-            "dos_examples": ["捕捉自然的人物表情和互动", "图片清晰、焦点准确", "保持背景干净或有意义"],
-            "donts_examples": ["使用过度修饰或虚假的摆拍图", "图片模糊或光线昏暗", "背景杂乱无章"]
+    """
+    基于品牌语调、受众偏好、行业趋势，智能生成品牌图像风格指南建议。
+    返回值: imagery_guide 字典，若AI返回异常则包含"error"字段。
+    """
+    print("  模块3.3: 定义图像风格指南 (AI版)...")
+    tone_keywords = brand_playbook_data.get('brand_tone_descriptors_list_str', '')
+    audience_keywords = audience_persona_data.get('visual_preferences_keywords_list_str', '')
+    industry_trends = trend_research_output.get('identified_industry_trends', [])
+    system_prompt = f"""
+你是品牌视觉设计专家，请根据以下输入，智能生成适合社交媒体的品牌图像风格指南建议，输出结构严格为JSON：
+{{
+  "photography_style": {{
+    "overall_mood": "...",
+    "subject_matter": "...",
+    "composition": "...",
+    "color_palette_reference": "...",
+    "dos_examples": [...],
+    "donts_examples": [...]
+  }},
+  "illustration_graphic_style": {{
+    "primary_style": "...",
+    "iconography_style": "...",
+    "data_visualization_style": "...",
+    "usage_notes": "..."
+  }}
+}}
+输入：
+- 品牌语调关键词: {tone_keywords}
+- 受众视觉偏好: {audience_keywords}
+- 行业趋势: {industry_trends}
+要求：
+- 明确摄影风格的整体氛围、主体、构图、色调、正反例。
+- 明确插画/图标/数据可视化风格及用途。
+- 输出必须是完整JSON对象，字段齐全。
+"""
+    model = ModelFactory.create(
+        model_platform=ModelPlatformType.SILICONFLOW,
+        model_type='Pro/deepseek-ai/DeepSeek-V3',
+        model_config_dict={
+            "max_tokens": 2048,
+            "temperature": 0.7,
         },
-        "illustration_graphic_style": {
-            "primary_style": "扁平化或轻拟物质感插画，线条流畅，色彩明快。",
-            "iconography_style": "简约线性图标，与品牌字体风格协调，表意清晰。",
-            "data_visualization_style": "图表设计简洁直观，色彩遵循品牌规范，避免过多装饰元素干扰信息传达。",
-            "usage_notes": "插画可用于辅助解释复杂概念、增加趣味性或作为装饰元素。"
-        }
-    }
-    return imagery_guide
+        api_key=SF_API_KEY,
+    )
+    agent = ChatAgent(
+        system_message=system_prompt,
+        model=model,
+        message_window_size=1000,
+    )
+    usr_msg = "请根据上述输入生成图像风格指南建议。"
+    try:
+        response = agent.step(usr_msg)
+        strRes = response.msgs[0].content
+        try:
+            return json.loads(strRes)
+        except json.JSONDecodeError as e:
+            return {"error": f"JSON解析错误: {e}", "raw": strRes}
+    except Exception as e:
+        return {"error": f"AI调用异常: {e}"}
 
 def _define_layout_principles(
     defined_color_system: dict,
@@ -163,3 +282,43 @@ def build_social_vi_system(
     # }
     print(f"模块3: 社交媒体视觉识别系统构建完成。")
     return social_vi_system_output
+
+def test_define_color_palette():
+    # 测试样例
+    existing_colors = "['#0A7AFF', '#FFD60A']"
+    brand_tone = "['科技感', '信赖', '活力']"
+    audience_pref = "['明亮', '现代', '高对比']"
+    industry_trends = [
+        {"trend_name": "莫兰迪色系", "colors": ['#E0E0E0', '#BDBDBD']},
+        {"trend_name": "高饱和蓝", "colors": ['#0A7AFF']}
+    ]
+    visual_design_principles_kb = {"color_psychology": {"blue": "科技、信任、冷静", "yellow": "活力、乐观"}}
+    res = _define_color_palette(existing_colors, brand_tone, audience_pref, industry_trends, visual_design_principles_kb)
+    print(res)
+
+def test_define_typography_system():
+    # 测试样例
+    existing_fonts = "['思源黑体 CN Regular', 'Arial']"
+    brand_playbook = {
+        'brand_persona_keywords_list_str': "['科技感', '现代', '国际化']",
+        'brand_tone_descriptors_list_str': "['专业', '简洁']"
+    }
+    res = _define_typography_system(existing_fonts, brand_playbook, multi_language_needed=True)
+    print(res)
+
+def test_define_imagery_style_guide():
+    # 测试样例
+    brand_playbook = {
+        'brand_tone_descriptors_list_str': "['真实', '亲切', '现代']"
+    }
+    audience_persona = {
+        'visual_preferences_keywords_list_str': "['生活化场景', '明亮色调', '高质感']"
+    }
+    trend_research = {
+        'identified_industry_trends': [
+            {"name": "生活化摄影", "description": "真实场景、自然光"},
+            {"name": "扁平插画", "description": "简洁明快"}
+        ]
+    }
+    res = _define_imagery_style_guide(brand_playbook, audience_persona, trend_research)
+    print(res)
