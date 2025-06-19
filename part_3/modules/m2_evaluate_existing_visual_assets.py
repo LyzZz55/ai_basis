@@ -262,7 +262,9 @@ def test_research_visual_trends():
     print(res['competitor_visual_strategies'])
     print(res['identified_industry_trends'])
     print(res['social_media_specific_trends'])
-    
+
+
+
 # test_analyze_existing_visual_assets()
 # print('\n')
 # test_research_visual_trends()

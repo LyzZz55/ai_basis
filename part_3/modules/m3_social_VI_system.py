@@ -8,6 +8,12 @@ import json
 
 # from agent3.utils_knowledge_base_manager import load_knowledge_base_data
 
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API")
+SF_API_KEY = os.getenv("FLOW_API")
+
+
 # --- Helper functions for sub-modules  ---
 def _define_color_palette(
     existing_colors_str: str, # "['#000000', '#FFFFFF']"

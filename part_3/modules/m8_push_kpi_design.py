@@ -2,7 +2,17 @@
 # 说明如何、何时、何地发布和推广内容。
 ########################################################
 
-# from agent3.utils_knowledge_base_manager import load_knowledge_base_data
+from dotenv import load_dotenv
+import os
+from camel.agents import ChatAgent
+from camel.models import ModelFactory
+from camel.types import ModelPlatformType, ModelType
+import json
+
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API")
+SF_API_KEY = os.getenv("FLOW_API")
 
 def define_kpi_framework_and_reporting(
     initial_kpi_framework_data: dict,    # 来自Agent 1
@@ -51,86 +61,163 @@ def define_kpi_framework_and_reporting(
     
     target_platforms = ["Weibo", "Xiaohongshu", "Douyin", "Bilibili", "WeChat Official Account"]
     """
-    # initial_kpi_framework_data (输入示例): {'primary_goals_list_str': "['提升品牌知名度', '促进用户互动']", 'secondary_goals_list_str': "['引导官网流量']"}
-    # editorial_calendar_data (输入示例): {'main_content_categories_list_str': "['产品介绍', '行业动态', '用户案例']", 'key_campaigns_for_tracking': [{'name': 'Q3新品推广', 'focus_kpis': ['新品提及量', '互动率']}]}
-    # brand_marketing_objectives_str (输入示例): "['年度粉丝增长30%', '核心产品话题讨论度提升50%']"
-    # target_platforms (输入示例): ['Weibo', 'Xiaohongshu', 'Douyin']
-
+   
     print(f"模块8: 正在定义KPI框架与报告体系...")
-    # platform_analytics_kb = load_knowledge_base_data("platform_analytics_capabilities.json") # 假设包含各平台典型可追踪指标
-    # platform_analytics_kb_example = {
-    #    "Weibo": ["Impressions", "Engagement Rate", "Follower Growth", "CTR", "转发数", "评论数", "点赞数"],
-    #    "Xiaohongshu": ["曝光量", "笔记互动（赞藏评）", "粉丝数", "主页访问量"],
-    #    "Douyin": ["播放量", "完播率", "点赞", "评论", "分享", "主页访问"]
-    # }
+    
+    # 系统提示设计
+    SystemPrompt = """
+作为营销分析专家，你需要根据以下输入数据构建全面的KPI框架和报告体系：
+1. 初始KPI框架数据 (initial_kpi_framework_data)
+2. 内容日历数据 (editorial_calendar_data)
+3. 品牌营销目标 (brand_marketing_objectives_str)
+4. 目标平台列表 (target_platforms)
+
+请严格按照以下JSON格式输出结果：
+{
+  "detailed_kpi_library": [
+    {
+      "kpi_name": "KPI名称",
+      "category": "认知层/互动层/引导层/品牌健康度",
+      "definition": "KPI定义",
+      "formula_notes": "计算公式或说明",
+      "platforms_applicable": ["适用平台1", "适用平台2"]
+    }
+  ],
+  "platform_specific_kpi_focus_map": {
+    "平台名称": {
+      "core_kpis_suggestion": ["核心KPI1", "核心KPI2"],
+      "secondary_kpis_suggestion": ["次要KPI1", "次要KPI2"],
+      "diagnostic_kpis_notes": "诊断性KPI说明"
+    }
+  },
+  "recommended_analysis_dimensions": ["分析维度1", "分析维度2"],
+  "reporting_template_structure_outline": {
+    "suggested_reporting_frequency": "报告频率",
+    "core_sections": [
+      {"section_name": "部分名称", "description": "部分描述"}
+    ],
+    "data_visualization_suggestions": ["可视化建议1", "可视化建议2"]
+  },
+  "data_tracking_tool_suggestions_notes": "数据追踪工具建议"
+}
+
+具体要求：
+1. KPI库应覆盖认知层、互动层、引导层和品牌健康度四个类别
+2. 平台KPI映射应基于平台特性（如微博重传播、小红书重互动、抖音重视频）
+3. 分析维度应包含内容主题、平台对比、时间周期等
+4. 报告结构应包含摘要、KPI达成、平台分析、内容分析等核心部分
+5. 引用初始KPI框架中的指标建议和内容日历中的营销活动
+6. 确保所有建议与品牌营销目标保持一致
+"""
 
 
-    kpi_definitions_list = [
-        {"kpi_name": "曝光量/展示次数 (Impressions/Views)", "category": "认知层", "definition": "内容被展示的总次数。", "formula_notes": "平台直接提供", "platforms_applicable": target_platforms},
-        {"kpi_name": "覆盖人数 (Reach)", "category": "认知层", "definition": "看到内容的独立用户总数。", "formula_notes": "平台直接提供", "platforms_applicable": target_platforms},
-        {"kpi_name": "互动率 (Engagement Rate)", "category": "互动层", "definition": "（点赞+评论+分享+收藏等总互动数）/ 曝光量或覆盖人数。", "formula_notes": "需计算，确保分子分母一致性", "platforms_applicable": target_platforms},
-        {"kpi_name": "点击率 (CTR - 若适用)", "category": "引导层", "definition": "点击链接的用户数 / 看到链接的用户数。", "formula_notes": "平台提供或通过短链追踪", "platforms_applicable": [p for p in target_platforms if p in ["Weibo", "微信公众号"]]}, # 示例
-        {"kpi_name": "粉丝净增长数 (Net Follower Growth)", "category": "品牌健康度", "definition": "统计周期内新增粉丝数 - 流失粉丝数。", "formula_notes": "平台直接提供或计算", "platforms_applicable": target_platforms},
-        {"kpi_name": "平均观看时长 (Avg. View Duration - 视频类)", "category": "互动层", "definition": "用户平均观看视频的时长。", "formula_notes": "平台直接提供", "platforms_applicable": [p for p in target_platforms if p in ["Douyin", "Bilibili", "快手"]]},
-        # 可以根据 initial_kpi_framework_data 和 brand_marketing_objectives_str 动态添加更多KPI
-    ]
+    # 创建模型实例
+    model = ModelFactory.create(
+        model_platform=ModelPlatformType.GEMINI,
+        model_type=ModelType.GEMINI_2_0_FLASH,
+        model_config_dict={"max_tokens": 4096, "temperature": 0.5},
+        api_key=GEMINI_API_KEY,
+    )
+    
+    # 创建Agent
+    agent = ChatAgent(
+        system_message=SystemPrompt,
+        model=model,
+        message_window_size=1000,
+    )
+
+
+    # 构建用户消息
+    usr_msg = f"""
+## 输入数据 ##
+
+1. 初始KPI框架数据:
+{json.dumps(initial_kpi_framework_data, indent=2, ensure_ascii=False)}
+
+2. 内容日历数据:
+{json.dumps(editorial_calendar_data, indent=2, ensure_ascii=False)}
+
+3. 品牌营销目标:
+{brand_marketing_objectives_str}
+
+4. 目标平台列表:
+{target_platforms}
+
+## 特别说明 ##
+- 请确保平台KPI映射考虑各平台特性：
+  * 微博: 关注转发、评论、话题提及量
+  * 小红书: 关注笔记互动（赞/藏/评）、收藏率
+  * 抖音: 关注完播率、分享率、互动率
+  * B站: 关注弹幕互动、平均观看时长
+  * 微信公众号: 关注打开率、阅读完成率、转化CTR
+- 对于内容日历中的营销活动，请创建相应的专项KPI
+- 报告结构应包含季度复盘机制
+"""
+    
     try:
-        objectives = eval(brand_marketing_objectives_str)
-        if any("知名度" in obj for obj in objectives):
-            kpi_definitions_list.append({"kpi_name": "品牌搜索指数变化", "category": "认知层", "definition": "通过百度指数、微信指数等工具追踪品牌关键词搜索热度变化。", "formula_notes": "外部工具追踪", "platforms_applicable": ["Overall Brand"]})
-    except:
-        pass
-
-
-    platform_kpi_mapping = {}
-    for platform in target_platforms:
-        core_kpis = []
-        secondary_kpis = []
-        platform_metrics = platform_analytics_kb.get(platform, []) # 从KB获取该平台典型指标
-        if platform_metrics:
-            core_kpis = platform_metrics[:len(platform_metrics)//2] # 简单取一半为核心
-            secondary_kpis = platform_metrics[len(platform_metrics)//2:]
-        else: # Fallback
-            core_kpis = ["曝光量", "互动率"]
-            secondary_kpis = ["粉丝净增长数"]
-        platform_kpi_mapping[platform] = {
-            "core_kpis_suggestion": core_kpis,
-            "secondary_kpis_suggestion": secondary_kpis,
-            "diagnostic_kpis_notes": "诊断性KPI需结合具体内容和目标，例如分析互动类型构成（评论vs点赞），或CTR的来源帖子。"
+        # 获取Agent响应
+        response = agent.step(usr_msg)
+        raw_output = response.msgs[0].content
+        
+        # 清理响应内容
+        if raw_output.startswith('```json'):
+            clean_output = raw_output[7:-4].strip()
+        elif raw_output.startswith('{'):
+            clean_output = raw_output
+        else:
+            # 尝试提取JSON部分
+            json_match = re.search(r'\{.*\}', raw_output, re.DOTALL)
+            clean_output = json_match.group(0) if json_match else raw_output
+        
+        # 解析JSON
+        kpi_framework = json.loads(clean_output)
+        print(f"模块8: 成功生成KPI框架与报告体系")
+        return kpi_framework
+        
+    except json.JSONDecodeError as e:
+        print(f"JSON解析错误: {e}\n原始输出: {raw_output}")
+        return {
+            "detailed_kpi_library": [],
+            "platform_specific_kpi_focus_map": {},
+            "recommended_analysis_dimensions": [],
+            "reporting_template_structure_outline": {},
+            "data_tracking_tool_suggestions_notes": ""
         }
+    except Exception as e:
+        print(f"Agent执行错误: {e}")
+        return {
+            "detailed_kpi_library": [],
+            "platform_specific_kpi_focus_map": {},
+            "recommended_analysis_dimensions": [],
+            "reporting_template_structure_outline": {},
+            "data_tracking_tool_suggestions_notes": ""
+        }
+    
 
-    recommended_analysis_dimensions = [
-        "按内容主题/系列", "按Persona画像 (若内容有明确区分)", "按发布时段/工作日vs周末",
-        "按平台对比", "按内容格式 (图文vs短视频vs直播)", "按活动/营销节点", "付费推广vs自然流量"
-    ]
+def test_define_kpi_framework_and_reporting():
+    
+    kpi_framework = define_kpi_framework_and_reporting(
+        initial_kpi_framework_data={
+            "primary_goals_list_str": "['提升品牌在线知名度', '增强用户社群活跃度']",
+            "suggested_key_metrics_awareness_list_str": "['总曝光量', '品牌提及增长率']"
+        },
+        editorial_calendar_data={
+            "major_campaigns_list": [
+                {
+                    "campaign_name_str": "夏日焕新挑战赛",
+                    "target_platforms_list_str": "['小红书', '抖音']",
+                    "specific_kpi_focus_list_str": "['活动话题提及量', 'UGC作品提交数']"
+                }
+            ]
+        },
+        brand_marketing_objectives_str="['在未来6个月内将品牌认知度提升15%']",
+        target_platforms=["微博", "小红书", "抖音"]
+    )
+    # 输出结构示例
+    print(kpi_framework["detailed_kpi_library"][0])
 
-    reporting_template_structure_outline = {
-        "suggested_reporting_frequency": "周报（日常运营数据）、月报（趋势分析与策略调整）、季报（战略复盘）",
-        "core_sections": [
-            {"section_name": "1. 整体表现摘要 (Executive Summary)", "description": "关键指标概览、重要成果、主要问题与挑战。"},
-            {"section_name": "2. 核心KPI达成情况 (Core KPI Performance)", "description": "对照目标（若有），展示核心KPI（认知、互动、引导、转化、品牌健康度）。"},
-            {"section_name": "3. 各平台表现详析 (Platform Deep Dive)", "description": "分平台展示数据，对比各平台特性和用户行为差异。"},
-            {"section_name": "4. 内容表现分析 (Content Performance Analysis)", "description": "按内容主题、格式等维度分析，找出优质内容和可优化方向。"},
-            {"section_name": "5. 用户画像与互动分析 (Audience Insights)", "description": "粉丝增长趋势、用户画像变化、互动行为特点、UGC情况。"},
-            {"section_name": "6. 营销活动效果评估 (Campaign Evaluation - 若有)", "description": "针对特定营销活动的目标达成情况进行专项评估。"},
-            {"section_name": "7. 结论与行动建议 (Conclusion & Recommendations)", "description": "总结经验教训，提出下一阶段的优化策略和具体行动计划。"}
-        ],
-        "data_visualization_suggestions": ["趋势折线图 (如粉丝增长)", "对比柱状图 (如各平台互动率)", "构成饼图 (如互动类型占比)"]
-    }
 
-    kpi_framework_output = {
-        "detailed_kpi_library": kpi_definitions_list,
-        "platform_specific_kpi_focus_map": platform_kpi_mapping,
-        "recommended_analysis_dimensions": recommended_analysis_dimensions,
-        "reporting_template_structure_outline": reporting_template_structure_outline,
-        "data_tracking_tool_suggestions_notes": "主要依赖各社交平台自带分析后台；可辅助使用第三方社交媒体管理工具、短链追踪、网站分析工具等。"
-    }
-    # kpi_framework_output (输出示例): {
-    #   "detailed_kpi_library": [{"kpi_name": "曝光量...", "category": "认知层", ...}],
-    #   "platform_specific_kpi_focus_map": {"Weibo": {"core_kpis_suggestion": [...], ...}},
-    #   "recommended_analysis_dimensions": ["按内容主题...", ...],
-    #   "reporting_template_structure_outline": {"suggested_reporting_frequency": "...", "core_sections": [...]},
-    #   ...
-    # }
-    print(f"模块8: KPI框架与报告体系定义完成。")
-    return kpi_framework_output
+test_define_kpi_framework_and_reporting()
+'''
+{'kpi_name': '总曝光量', 'category': '认知层', 'definition': '所有平台品牌内容的总曝光次数，衡量品牌信息触达用户的广度。', 'formula_notes': '各平台曝光量加总。注意去重，避免重复计算。', 'platforms_applicable': ['微博', '小红书', '抖音']}
+'''
