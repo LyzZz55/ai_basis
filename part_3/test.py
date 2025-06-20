@@ -12,9 +12,7 @@ import base64
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-contents = ('Hi, can you create a 3d rendered image of a pig '
-            'with wings and a top hat flying over a happy '
-            'futuristic scifi city with lots of greenery?')
+contents = ('Brand Style: Modern, Simple, Tech Feel, Main Color: #0A7AFF, Auxiliary Color: #FFD60A, Cover Title: 2025 Summer New Product Launch, Category: Technology Products, Subtitle: Smart Technology, Leading the Future, Design Style: Suitable for Social Media Covers')
 
 response = client.models.generate_content(
     model="gemini-2.0-flash-preview-image-generation",

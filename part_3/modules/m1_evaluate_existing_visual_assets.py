@@ -11,7 +11,15 @@ from camel.models import ModelFactory
 from camel.configs import ChatGPTConfig, SiliconFlowConfig
 from camel.types import ModelPlatformType, ModelType
 import json
+
+import sys
+from pathlib import Path
+# 获取项目根目录并添加到sys.path
+project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
+sys.path.append(project_root)
+# 使用绝对导入
 from part_3.utils import clean_json_string
+
 load_dotenv()
 
 
