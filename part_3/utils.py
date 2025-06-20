@@ -66,3 +66,27 @@ def write_comprehensive_kpi_framework(data: dict, filename: str = "Comprehensive
     print(f"Data for '{filename}' saved to '{output_path}' (as .txt)")
 
 import os # ensure os is imported for path operations
+
+
+
+
+def clean_json_string(json_str: str) -> str:
+            """清理JSON字符串，移除markdown代码块标记"""
+            # 移除 ```json 开头
+            if '```json' in json_str:
+                json_str = json_str.split('```json')[-1]
+            # 移除 ``` 结尾
+            if '```' in json_str:
+                json_str = json_str.split('```')[0]
+            return json_str.strip()
+
+
+
+
+
+
+
+
+
+
+

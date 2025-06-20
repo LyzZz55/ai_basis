@@ -1,7 +1,8 @@
-############################################
+########################################################################################
 # 评估现有的视觉资产
 # 与Agent 1定义的品牌“人设”和“语调”的匹配程度，分析其在数字和社交媒体上传播的潜力与局限性
-############################################
+# 分析竞品视觉策略，研究与品牌行业和目标受众相关的社交媒体视觉设计趋势
+########################################################################################
 
 from dotenv import load_dotenv
 import os
@@ -10,44 +11,41 @@ from camel.models import ModelFactory
 from camel.configs import ChatGPTConfig, SiliconFlowConfig
 from camel.types import ModelPlatformType, ModelType
 import json
-
+from part_3.utils import clean_json_string
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API")
-SF_API_KEY = os.getenv("FLOW_API")
 
 
-
-def analyze_existing_visual_assets(brand_visual_assets_data: dict, brand_playbook_data: dict) -> dict:
-    '''
-    评估当前品牌视觉资产与品牌战略（人设、语调）的匹配度，及其在数字媒体的适用性。
-
-    输入eg:
-    brand_visual_assets_data = {
-        "logo_description_str": "我们的Logo是一个复杂的盾牌和狮子图案，使用了三种深色调。",
-        "vi_manual_summary_str": "VI手册规定了严格的线下物料配色和字体，线上应用提及较少。",
-        "existing_colors_list_str": "['#1A2B3C', '#4D5E6F', '#7A8B9C']", # 品牌主色等
-        "existing_fonts_list_str": "['宋体', '特定艺术字体']" # 现有字体
-    }
-
-    brand_playbook_data = {
-        "brand_persona_keywords_list_str": "['创新', '年轻', '活力', '科技感']",
-        "brand_tone_descriptors_list_str": "['友好', '专业', '简洁']"
-    }
-
-
-    输出eg:
-    analysis_result = {
-        "alignment_summary": "Logo图案与'科技感'人设部分匹配，但'复杂'特性与'简洁'语调存在冲突。VI手册对线上应用指导不足。",
-        "digital_suitability_notes": "复杂Logo在小尺寸头像上可能难以识别。深色调配色需谨慎用于需要活力的社交平台。",
-        "extensibility_issues": ["Logo横纵比不适合方形头像", "现有字体可能存在网页授权问题"],
-        "adaptation_recommendations": ["建议简化Logo用于社交媒体", "考虑为线上补充更明亮的辅助色系"]
-    }
-    '''
-    # start of code analyze_existing_visual_assets
+class BrandVisualAnalyzer:
+    GEMINI_API_KEY = os.getenv("GEMINI_API")
+    SF_API_KEY = os.getenv("FLOW_API")
     
-    SystemVisualImformationAnalysePrompt = """
-作为品牌策略分析专家，请根据以下提供的品牌视觉资产数据和品牌策略手册数据，评估当前品牌视觉资产与品牌战略（人设、语调）的匹配度，及其在数字媒体的适用性。
+    def __init__(self):
+        # 初始化Model
+        self.visual_analysis_model = ModelFactory.create(
+            model_platform=ModelPlatformType.SILICONFLOW,
+            model_type='Pro/deepseek-ai/DeepSeek-V3',
+            model_config_dict={
+                "max_tokens": 4096,
+                "temperature": 0.7
+            },
+            api_key=self.SF_API_KEY,
+        )
+        self.trend_analysis_model = ModelFactory.create(
+            model_platform=ModelPlatformType.GEMINI,
+            model_type=ModelType.GEMINI_2_0_FLASH,
+            model_config_dict={
+                "max_tokens": 4096,
+                "temperature": 0.7
+            },
+            api_key=self.GEMINI_API_KEY,
+        )
+        
+        
+        
+        # Prompt
+        self.VisualImformationAnalysePrompt = """
+        作为品牌策略分析专家，请根据以下提供的品牌视觉资产数据和品牌策略手册数据，评估当前品牌视觉资产与品牌战略（人设、语调）的匹配度，及其在数字媒体的适用性。
 
 请严格按照以下JSON格式和内容要求输出您的分析结果, 不要出现多余的```json等包围, 输出为一行：
 
@@ -74,82 +72,10 @@ def analyze_existing_visual_assets(brand_visual_assets_data: dict, brand_playboo
 {"alignment_summary": "Logo图案与'科技感'人设部分匹配，但'复杂'特性与'简洁'语调存在冲突。VI手册对线上应用指导不足。","digital_suitability_notes": "复杂Logo在小尺寸头像上可能难以识别。深色调配色需谨慎用于需要活力的社交平台。","extensibility_issues": ["Logo横纵比不适合方形头像", "现有字体可能存在网页授权问题"],"adaptation_recommendations": ["建议简化Logo用于社交媒体", "考虑为线上补充更明亮的辅助色系"]}
 
 请确保输出是完整的 JSON 对象，并且每个字段的内容都经过深思熟虑，能够准确反映输入数据之间的关系和潜在的优化方向。
-"""
-
-    model = ModelFactory.create(
-        model_platform=ModelPlatformType.SILICONFLOW,
-        model_type='Pro/deepseek-ai/DeepSeek-V3',
-        model_config_dict={
-            "max_tokens": 4096,  # 设置合理的最大令牌数（根据模型支持调整）
-            "temperature": 0.7,  # 可选：其他模型参数
-        },
-        api_key=SF_API_KEY,
-    )
-    
-    agent = ChatAgent(
-        system_message=SystemVisualImformationAnalysePrompt,
-        model=model,
-        message_window_size=1000,
-    )
-    usr_msg = f"""
-品牌视觉资产数据:
-{brand_visual_assets_data}
-品牌策略手册数据:
-{brand_playbook_data}
-"""
-    try:
-        response = agent.step(usr_msg)
-        strRes = response.msgs[0].content
-        try:
-            return json.loads(strRes)
-        except json.JSONDecodeError as e:
-            print(f"analyze_existing_visual_assets, JSON解析错误： {e}")
-    except Exception as e:
-        print(f"An error occured when ask for AI response: {e}")
-    
-    # end of code analyze_existing_visual_assets
-
-
-
-def research_visual_trends(
-    agent1_competitor_analysis_summary_str: str,
-    brand_industry_str: str,
-    target_audience_persona_data: dict,
-    social_media_platform_names_str: str = "微信公众号"
-) -> dict:
-    '''
-    研究竞品视觉策略及与品牌行业、目标受众相关的社交媒体视觉趋势。
-
-    eg: 
-    agent1_competitor_analysis_summary_str= "竞品A主要使用明亮色彩和卡通形象，风格年轻化。竞品B视觉风格偏向成熟稳重，使用大量实景摄影图片..."
-
-    brand_industry_str= "在线教育" or "时尚快销"
-
-    target_audience_persona_data = {
-        "audience_name": "Gen Z 学生",
-        "visual_preferences_keywords_list_str": "['简约', '潮酷', '真实感', 'meme风格']"
-    }
-
-    social_media_platform_names_list_str="['微信公众号', '微博', '小红书', '抖音']"
-
-    输出：
-    trend_report = {
-        "competitor_visual_strategies": [
-            {"competitor_name": "竞品A", "visual_summary": "明亮色彩、卡通形象、年轻化"},
-            {"competitor_name": "竞品B", "visual_summary": "成熟稳重、实景摄影"}
-        ],
-        "identified_industry_trends": [
-            {"name": "扁平化插画风", "description": "简洁、现代，常用于解释性内容", "relevance_to_audience": "中"},
-            {"name": "明亮渐变色", "description": "营造积极、有活力的氛围", "relevance_to_audience": "高 (匹配'活力')"}
-        ],
-        "social_media_specific_trends":  ["生活化场景图", "精致排版"],
-    }
-
-    '''
-
-    # begin of research_visual_trends
-    SystemAnalysePrompt = """
-作为品牌策略分析专家，请根据以下提供的品牌视觉资产数据和品牌策略手册数据，评估当前品牌视觉资产与品牌战略（人设、语调）的匹配度，及其在数字媒体的适用性。
+        """
+        
+        self.TrendAnalysePrompt = """
+        作为品牌策略分析专家，请根据以下提供的品牌视觉资产数据和品牌策略手册数据，评估当前品牌视觉资产与品牌战略（人设、语调）的匹配度，及其在数字媒体的适用性。
 
 请严格按照以下JSON格式和内容要求输出您的分析结果, 不要出现多余的```json等包围, 输出为一行：
 
@@ -175,45 +101,147 @@ social_media_platform_names_str: "微信公众号,抖音"
 { "competitor_visual_strategies": [ {"competitor_name": "竞品A", "visual_summary": "明亮色彩、卡通形象、年轻化"}, {"competitor_name": "竞品B", "visual_summary": "成熟稳重、实景摄影"}, {"competitor_name": "竞品C", "visual_summary": "简约、科技感、深色背景、抽象线条"} ], "identified_industry_trends": [ {"name": "扁平化插画风", "description": "简洁、现代，常用于在线课程界面", "relevance_to_audience": "高 (符合'简约')"}, {"name": "真实场景短视频", "description": "展现学习场景，提升代入感", "relevance_to_audience": "高 (符合'真实感'和'潮酷')"} ], "social_media_specific_trends": { "trends_list": ["笔记式图文结合", "meme风格贴纸", "生活化场景短视频", "高饱和度配色"]  // 合并多平台趋势 } }
 
 请确保输出是完整的 JSON 对象，并且每个字段的内容都经过深入研究和分析，能够准确反映当前视觉趋势。
-"""
-    
-    model = ModelFactory.create(
-        model_platform=ModelPlatformType.GEMINI,
-        model_type=ModelType.GEMINI_2_0_FLASH,
-        model_config_dict={
-            "max_tokens": 4096,  # 设置合理的最大令牌数（根据模型支持调整）
-            "temperature": 0.7,  # 可选：其他模型参数
-        },
-        api_key=GEMINI_API_KEY,
-    )
-    
-    agent = ChatAgent(
-        system_message=SystemAnalysePrompt,
-        model=model,
-        message_window_size=1000,
-    )
-    usr_msg = f"""
-agent1_competitor_analysis_summary_str: {agent1_competitor_analysis_summary_str}
-brand_industry_str: {brand_industry_str}
-target_audience_persona_data = {target_audience_persona_data}
-social_media_platform_names_str: {social_media_platform_names_str}
         """
-    try:
-        response = agent.step(usr_msg)
-        strRes = response.msgs[0].content
-        if (strRes[0] == '`'):
-            strRes = strRes[7: -4]
-        try:
-            return json.loads(strRes)
-        except json.JSONDecodeError as e:
-            print(f"analyze_existing_visual_assets, JSON解析错误： {e}")
-    except Exception as e:
-            print(f"An error occured when ask for AI response: {e}")
-    
-    
+        
+        # 初始化Agent
+        self.visual_analyzer_agent = ChatAgent(
+            system_message=self.VisualImformationAnalysePrompt,
+            model=self.visual_analysis_model,
+            message_window_size=1000,
+        )
+        
+        self.trend_analyzer_agent = ChatAgent(
+            system_message=self.TrendAnalysePrompt,
+            model=self.trend_analysis_model,
+            message_window_size=1000,
+        )
 
-    
-    # end of research_visual_trends
+
+    def analyze_existing_visual_assets(self, brand_visual_assets_data: dict, brand_playbook_data: dict) -> dict:
+        '''
+        评估当前品牌视觉资产与品牌战略（人设、语调）的匹配度，及其在数字媒体的适用性。
+
+        输入eg:
+        brand_visual_assets_data = {
+            "logo_description_str": "我们的Logo是一个复杂的盾牌和狮子图案，使用了三种深色调。",
+            "vi_manual_summary_str": "VI手册规定了严格的线下物料配色和字体，线上应用提及较少。",
+            "existing_colors_list_str": "['#1A2B3C', '#4D5E6F', '#7A8B9C']", # 品牌主色等
+            "existing_fonts_list_str": "['宋体', '特定艺术字体']" # 现有字体
+        }
+
+        brand_playbook_data = {
+            "brand_persona_keywords_list_str": "['创新', '年轻', '活力', '科技感']",
+            "brand_tone_descriptors_list_str": "['友好', '专业', '简洁']"
+        }
+
+
+        输出eg:
+        analysis_result = {
+            "alignment_summary": "Logo图案与'科技感'人设部分匹配，但'复杂'特性与'简洁'语调存在冲突。VI手册对线上应用指导不足。",
+            "digital_suitability_notes": "复杂Logo在小尺寸头像上可能难以识别。深色调配色需谨慎用于需要活力的社交平台。",
+            "extensibility_issues": ["Logo横纵比不适合方形头像", "现有字体可能存在网页授权问题"],
+            "adaptation_recommendations": ["建议简化Logo用于社交媒体", "考虑为线上补充更明亮的辅助色系"]
+        }
+        '''
+        # start of code analyze_existing_visual_assets
+        
+
+        model = ModelFactory.create(
+            model_platform=ModelPlatformType.SILICONFLOW,
+            model_type='Pro/deepseek-ai/DeepSeek-V3',
+            model_config_dict={
+                "max_tokens": 4096,  # 设置合理的最大令牌数（根据模型支持调整）
+                "temperature": 0.7,  # 可选：其他模型参数
+            },
+            api_key=SF_API_KEY,
+        )
+        
+        agent = ChatAgent(
+            system_message=self.VisualImformationAnalysePrompt,
+            model=model,
+            message_window_size=1000,
+        )
+        usr_msg = f"""
+    品牌视觉资产数据:
+    {brand_visual_assets_data}
+    品牌策略手册数据:
+    {brand_playbook_data}
+    """
+        try:
+            response = agent.step(usr_msg)
+            strRes = response.msgs[0].content
+            try:
+                return json.loads(strRes)
+            except json.JSONDecodeError as e:
+                print(f"analyze_existing_visual_assets, JSON解析错误： {e}")
+        except Exception as e:
+            print(f"An error occured when ask for AI response: {e}")
+        
+        # end of code analyze_existing_visual_assets
+
+
+
+    def research_visual_trends(
+        self,
+        agent1_competitor_analysis_summary_str: str,
+        brand_industry_str: str,
+        target_audience_persona_data: dict,
+        social_media_platform_names_str: str = "微信公众号"
+    ) -> dict:
+        '''
+        研究竞品视觉策略及与品牌行业、目标受众相关的社交媒体视觉趋势。
+
+        eg: 
+        agent1_competitor_analysis_summary_str= "竞品A主要使用明亮色彩和卡通形象，风格年轻化。竞品B视觉风格偏向成熟稳重，使用大量实景摄影图片..."
+
+        brand_industry_str= "在线教育" or "时尚快销"
+
+        target_audience_persona_data = {
+            "audience_name": "Gen Z 学生",
+            "visual_preferences_keywords_list_str": "['简约', '潮酷', '真实感', 'meme风格']"
+        }
+
+        social_media_platform_names_list_str="['微信公众号', '微博', '小红书', '抖音']"
+
+        输出：
+        trend_report = {
+            "competitor_visual_strategies": [
+                {"competitor_name": "竞品A", "visual_summary": "明亮色彩、卡通形象、年轻化"},
+                {"competitor_name": "竞品B", "visual_summary": "成熟稳重、实景摄影"}
+            ],
+            "identified_industry_trends": [
+                {"name": "扁平化插画风", "description": "简洁、现代，常用于解释性内容", "relevance_to_audience": "中"},
+                {"name": "明亮渐变色", "description": "营造积极、有活力的氛围", "relevance_to_audience": "高 (匹配'活力')"}
+            ],
+            "social_media_specific_trends":  ["生活化场景图", "精致排版"],
+        }
+
+        '''
+        
+        # TODO 如何调用搜索工具
+
+        # begin of research_visual_trends
+        usr_msg = f"""
+    agent1_competitor_analysis_summary_str: {agent1_competitor_analysis_summary_str}
+    brand_industry_str: {brand_industry_str}
+    target_audience_persona_data = {target_audience_persona_data}
+    social_media_platform_names_str: {social_media_platform_names_str}
+            """
+        try:
+            response = self.trend_analyzer_agent.step(usr_msg)
+            strRes = response.msgs[0].content
+            strRes = clean_json_string(strRes)
+            try:
+                return json.loads(strRes)
+            except json.JSONDecodeError as e:
+                print(f"analyze_existing_visual_assets, JSON解析错误： {e}")
+        except Exception as e:
+                print(f"An error occured when ask for AI response: {e}")
+        
+        
+
+        
+        # end of research_visual_trends
 
 
 ##################################################################################################################################
@@ -237,7 +265,9 @@ def test_analyze_existing_visual_assets():
         "brand_tone_descriptors_list_str": "[' 亲切 ', ' 治愈 ', ' 质朴 ']" 
     }
     
-    res = analyze_existing_visual_assets(a, b)
+    ag = BrandVisualAnalyzer()
+    
+    res = ag.analyze_existing_visual_assets(a, b)
     print(res["alignment_summary"])
     print(res["digital_suitability_notes"])
     print(res["extensibility_issues"])
@@ -257,8 +287,8 @@ def test_research_visual_trends():
     s = [
         "微信公众号", "小红书"
     ]
-    
-    res = research_visual_trends(a, b, t, s[0])
+    ag = BrandVisualAnalyzer()
+    res = ag.research_visual_trends(a, b, t, s[0])
     print(res['competitor_visual_strategies'])
     print(res['identified_industry_trends'])
     print(res['social_media_specific_trends'])
