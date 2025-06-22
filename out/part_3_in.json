@@ -9,21 +9,6 @@
       "path": "./out/Detailed_Target_Audience_Persona_Portfolie.txt",
       "comment": "核心用户画像",
       "type": "text"
-    },
-    {
-      "path": "./out/Master_Editorial_Calendar.txt",
-      "comment": "交互式内容日历",
-      "type": "text"
-    },
-    {
-      "path": "./out/Flagship_Content_Creative_Briefs_Package.txt",
-      "comment": "包含 3-5 个旗舰级内容的深度策划文档（图文大纲、视频脚本/故事板、活动策划案等）。",
-      "type": "text"
-    },
-    {
-      "path": "./in/Draft_Copy_AB_Testing_Proposals.txt",
-      "comment": "可供借鉴的现有视觉资产",
-      "type": "png"
     }
   ]
 }

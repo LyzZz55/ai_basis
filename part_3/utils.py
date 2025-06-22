@@ -1,8 +1,22 @@
 
 import json
+from camel.loaders import create_file_from_raw_bytes
 
+def save_to_file(content: str, file_path: str,io_pattern = 'a' , encoding: str = 'utf-8') -> None:
+    """将string保存到指定文件"""
+    try:
+        with open(file_path, io_pattern, encoding=encoding) as file:
+            file.write(content)
+        print(f"内容已追加到文件: {file_path}")
+    except Exception as e:
+        print(f"写入文件时出错: {e}")
 
-
+def output(color, message, f, std_flag):
+    # if std_flag:
+        # print(colored(message, color.lower())) # TODO
+    if f is not None:
+        f.write("----------" + color + "--------\n" + message + "\n")
+    return
 
 def load_file_config(json_path: str) -> dict:
     """从 JSON 文件加载文件配置"""
@@ -30,7 +44,7 @@ def load_files_from_config(config: dict) -> dict:
                 "comment": comment,
                 "type": file_info.get("type", "unknown")
             }
-            output("BLACK", f"'{file_path}' read", None, True)
+            print("BLACK", f"'{file_path}' read", None, True)
         except Exception as e:
             output("BLACK", f"无法加载文件 {file_path}: {e}", None, True)
             return {}
