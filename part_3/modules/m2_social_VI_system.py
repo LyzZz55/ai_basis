@@ -515,7 +515,171 @@ def test_define_imagery_style_guide():
     )
     print(result)
 
-# 取消注释以下行以运行测试
-test_define_color_palette()
-test_define_typography_system()
-test_define_imagery_style_guide()
+def test_define_video_style_guide():
+    """测试品牌视频风格指南生成功能"""
+    social_vi = SocialVISystem()
+    brand_playbook = {
+        'brand_tone_descriptors_list_str': "['年轻活力', '创意十足']"
+    }
+    audience_persona = {
+        'video_preferences_keywords_list_str': "['快节奏剪辑', '动画元素', '明亮色彩']"
+    }
+    trend_research = {
+        "current_industry_trends": [
+            {"trend_name": "短平快视频", "description": "15秒内高密度信息"},
+            {"trend_name": "动态图形设计", "description": "MG动画元素"}
+        ]
+    }
+    result = social_vi._define_video_style_guide(
+        brand_playbook, audience_persona, trend_research
+    )
+    print("视频风格指南测试结果:")
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+
+def test_define_layout_principles():
+    """测试版式与构图原则生成功能"""
+    social_vi = SocialVISystem()
+    color_system = {
+        "primary_colors": ["#0A7AFF", "#FFD60A"],
+        "secondary_colors": ["#F5F5F5", "#E0E0E0"]
+    }
+    typography_system = {
+        "primary_headline_font": {
+            "family": "Inter",
+            "weights": ["700", "600"],
+            "style_description": "现代无衬线"
+        }
+    }
+    visual_design_kb = {
+        "layout_theory": {"grid": "8点系统", "hierarchy": "字号差1.5倍"},
+        "color_psychology": {"blue": "科技、信任", "yellow": "活力、乐观"}
+    }
+    result = social_vi._define_layout_principles(
+        color_system, typography_system, visual_design_kb
+    )
+    print("版式与构图原则测试结果:")
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+
+def test_build_social_vi_system():
+    """测试完整社交媒体VI系统构建功能"""
+    social_vi = SocialVISystem()
+    
+    # 模拟输入数据
+    brand_visual_assets = {
+        "existing_colors_list_str": "['#0A7AFF', '#FFD60A']",
+        "existing_fonts_list_str": "['Inter', '思源黑体 CN']"
+    }
+    brand_playbook = {
+        "brand_tone_descriptors_list_str": "['科技感', '信赖', '活力']",
+        "multi_language_needed": True,
+        "brand_persona_keywords_list_str": "['创新', '专业', '年轻化']"
+    }
+    audience_persona = {
+        "visual_preferences_keywords_list_str": "['现代简约', '高对比度', '动态效果']",
+        "video_preferences_keywords_list_str": "['快节奏', '信息可视化']"
+    }
+    module1_output = {"asset_analysis": "完成基础资产分析"}
+    module2_output = {
+        "current_industry_trends": [
+            {"trend_name": "极简主义设计", "colors": ["#F0F0F0", "#333333"]},
+            {"trend_name": "微交互动画", "description": "按钮动态反馈"}
+        ],
+        "trend_recommendation": {
+            "suitable_trends": ["极简主义设计", "微交互动画"],
+            "trend_adaptation_strategies": "结合品牌色彩与动态元素"
+        }
+    }
+    
+    # 执行完整VI系统构建
+    result = social_vi.build_social_vi_system(
+        brand_visual_assets, brand_playbook, audience_persona,
+        module1_output, module2_output
+    )
+    
+    print(result)
+    # 打印结果摘要
+    print("完整VI系统构建测试结果:")
+    print(f"色彩系统: {result.get('color_palette_system', {}).get('primary_colors', '生成失败')}")
+    print(f"字体系统: {result.get('typography_system', {}).get('primary_headline_font', {}).get('family', '生成失败')}")
+    print(f"图像风格: {result.get('imagery_style_guide', {}).get('photography_style', {}).get('overall_mood', '生成失败')}")
+    print(f"视频风格: {result.get('video_style_guide', {}).get('visual_rhythm', '生成失败')}")
+    print(f"布局系统: {result.get('layout_and_composition', {}).get('grid_system', {}).get('base_unit', '生成失败')}")
+
+
+print("开始执行SocialVISystem测试...")
+# test_define_color_palette()
+# test_define_typography_system()
+# test_define_imagery_style_guide()
+# test_define_video_style_guide()
+# test_define_layout_principles()
+test_build_social_vi_system()
+print("所有测试执行完成")
+
+'''
+{
+    'color_palette_system': {
+        'primary_colors': ['#0A7AFF', '#FFD60A'], 
+        'secondary_colors': ['#63B5FF', '#FFE57F', '#3498DB'], 
+        'accent_colors': ['#FF453A', '#FFFFFF'], 
+        'neutral_colors': ['#FFFFFF', '#F2F2F7', '#AEB1B8', '#2C2C2E', '#000000'], 
+        'psychology_notes': '主色#0A7AFF（科技蓝）传递科技感、创新和信任，符合科技行业的品牌形象。#FFD60A（活力黄）代表活力、乐观和能量，能够吸引用户的注意力。两种颜色组合既体现了专业性，又不失活力和创造力。', 
+        'social_media_adaptation': '针对社交媒体平台，#0A7AFF和#FFD60A在高对比度屏幕上表现良好，但在小屏幕上可能略显饱和。建议在移动端适当降低饱和度，或使用辅助色#63B5FF和#FFE57F作为背景或强调色，以减轻视觉压力。交互强调色#FF453A（活力红）用于CTA按钮，#FFFFFF（纯白）用于文字，确保在各种背景下都有足够的对比度，符合WCAG 2.0 AA标准。中性色#F2F2F7（浅灰）可作为背景色，#AEB1B8（中灰）用于分割线和图标，#2C2C2E（深灰）用于正文，#000000（纯黑）用于标题，#FFFFFF（纯白）用于反白文字。为适应社交媒体平台的动态效果，可在过渡动画中使用主色和辅助色的渐变，增加视觉吸引力。'
+    }, 
+    'typography_system': {
+        'primary_headline_font': {'family': 'Inter', 'weights': ['600', '700', '800'], 'style_description': '现代无衬线，几何感强', 'usage_scenarios': '社交媒体帖子主标题、活动海报标题、广告主视觉'}, 
+        'secondary_headline_font': {'family': '思源黑体 CN', 'weights': ['500', '600'], 'style_description': '人文主义无衬线，字形温和', 'complementarity_notes': '与Inter形成科技感与亲和力的平衡，用于副标题和补充说明'}, 
+        'body_text_font': {'family': 'Inter', 'weights': ['400', '500'], 'style_description': '高可读性无衬线', 'readability_optimizations': '移动端自动增加0.5pt字重补偿，行高提升10%'}, 
+        'typographic_scale': [{'element': '帖子标题', 'font_family': 'Inter', 'size_desktop': '32px', 'size_mobile': '28px', 'weight': '700', 'line_height': '1.2'}, {'element': '正文段落', 'font_family': 'Inter', 'size_desktop': '16px', 'size_mobile': '15px', 'weight': '400', 'line_height': '1.6'}, {'element': '数据标注', 'font_family': 'Inter', 'size_desktop': '14px', 'size_mobile': '13px', 'weight': '500', 'line_height': '1.4'}, {'element': '多语言标题', 'font_family': '思源黑体 CN', 'size_desktop': '24px', 'size_mobile': '20px', 'weight': '600', 'line_height': '1.3'}], 
+        'multilanguage_support': '思源黑体CN支持中日韩字符集，Inter支持拉丁/西里尔字符，双语混排时优先使用思源黑体CN作为基础字体', 'licensing_guide': 'Inter使用OFL开源授权，思源黑体CN采用SIL Open Font License，均可商用但需保留版权声明', 
+        'social_media_adaptation': {'hashtag_style': {'font_family': 'Inter', 'size': '14px', 'weight': '600', 'color': '#2563EB'}, 
+        'comment_guidelines': '正文使用Inter 400字重，中文回复自动切换思源黑体CN，最小字号不低于12px'}}, 
+        'imagery_style_guide': {
+            'photography_style': {
+                'overall_mood': '科技感强烈的、专业且充满活力的氛围。着重体现产品的创新性和实用性，同时传递值得信赖的品牌形象。', 
+                'subject_matter': '以产品特写、使用场景、团队工作照为主。产品特写突出细节和质感，使用场景展现产品带来的便利和效率，团队工作照体现专业和信赖。', 
+                'composition_rules': '采用中心构图和三分法相结合，突出主体，保持画面平衡。留白较多，营造现代简约感。适当运用引导线，引导视线。', 
+                'color_palette_reference': '主要采用品牌主色调的科技蓝和活力橙。背景色多使用#F0F0F0的浅灰色，与极简主义设计趋势相符。高科技感产品可适当使用金属色。', 
+                'lighting_guidelines': '使用高对比度打光，突出产品轮廓和细节。产品特写可采用柔光，营造细腻质感。使用场景可采用自然光，展现真实感。', 
+                'dos_examples': ['拍摄产品特写时，使用高对比度打光，突出产品的科技感。', '拍摄使用场景时，选择现代简约的场景，体现产品的实用性。', '拍摄团队工作照时，选择明亮整洁的背景，展现团队的专业和活力。'], 
+                'donts_examples': ['避免使用过于花哨的背景和道具，以免分散注意力。', '避免使用低对比度的光线，以免画面显得平淡。', '避免使用模糊不清的照片，影响品牌专业形象。']}, 
+                'illustration_graphic_style': {'primary_style': '扁平化风格为主，线条简洁流畅，色彩明快。可适当运用少量3D渲染，增强视觉冲击力。', 
+                'iconography_system': '采用线性图标，线条简洁、统一，易于识别。图标设计风格与品牌主色调保持一致。', 'data_visualization_style': 
+                '采用简洁明了的图表形式，如柱状图、折线图、饼图等。配色方案与品牌色彩体系一致。突出关键数据，避免信息过载。', 
+                'color_application': '品牌主色调科技蓝和活力橙作为主要配色，#F0F0F0的浅灰色作为背景色。可适当使用辅助色，丰富画面层次。色彩搭配要符合科技感、信赖、活力的品牌语调。', 
+                'usage_scenarios': '扁平化插画适用于产品介绍、功能展示等场景。线性图标适用于导航、按钮等交互元素。数据可视化适用于数据报告、市场分析等场景。'}, 
+                'video_style_guide': {
+                    'visual_rhythm': '快速切换和缓慢叙事相结合。产品介绍、功能展示等场景采用快速切换，突出效率和科技感。品牌故事、用户案例等场景采用缓慢叙事，传递信赖感。', 
+                    'motion_guidelines': '采用平滑过渡和弹性动画相结合。转场动画要流畅自然，避免生硬突兀。微交互动画应用于按钮、链接等交互元素，增强用户体验。', 
+                    'branding_elements': '品牌Logo在视频开头和结尾露出，露出时间不宜过长。品牌主色调和辅助色贯穿整个视频。片尾可加入品牌标语，强化品牌形象。'
+                }
+            }, 
+            'video_style_guide': {
+                'video_mood': "结合['科技感', '信赖', '活力']的品牌调性，采用['快节奏', '信息可视化']的受众偏好元素", 
+                'visual_elements': '融入[]', 'motion_guidelines': '遵循平滑过渡与品牌节奏的动态效果原则', 
+                'branding_placements': '品牌标识在视频中的固定位置与曝光频率规范'}, 
+                'layout_and_composition': {
+                    'grid_system': {'base_unit': '8px', 
+                    'column_count': 12, 'gutter_width': '24px', 
+                    'social_media_adaptations': {'Instagram': '方形构图，使用8px网格单位，确保元素对齐', 'Facebook': '横向构图，适应16:9比例，保持品牌蓝色为主色调', 'Twitter': '纵向构图，突出标题字体Inter，确保可读性'}
+                }, 
+                'whitespace_strategy': {
+                    'main_content_padding': '32px', 
+                    'visual_breathing_space': '元素间距至少为16px，确保视觉呼吸空间', 
+                    'importance_of_whitespace': '留白增强科技感和信任感，突出品牌主色#0A7AFF'}, 
+                    'visual_hierarchy': {
+                        'hierarchy_rules': '字号差1.5倍，标题字体Inter加粗，正文使用常规字重', 
+                        'key_elements_priority': 'Logo > 标题 > 正文 > 行动按钮', 
+                        'social_media_attention_rules': '使用蓝色主色吸引注意力，绿色作为辅助色用于自然健康相关元素'}, 
+                        'brand_elements_placement': {'logo_placement': '左上角固定，确保品牌识别', 
+                        'logo_clear_space': 'Logo周围至少保留16px的空白区域', 
+                        'watermark_strategy': '仅在必要内容添加半透明水印，不影响主要内容阅读'}, 
+                        'cross_platform_adaptation': {
+                            'desktop_layout': '12列网格，主内容区居中，两侧留白', 
+                            'mobile_layout': '单列布局，标题字号适当增大，按钮大小适应触控', 
+                            'special_platforms': {'Instagram Stories': '全屏设计，突出视觉元素，减少文字', 'Live Streaming': '底部留出空间用于互动评论，避免遮挡主要内容'}
+                        }
+                    }, 
+                    'trend_adaptation': {'suitable_trends': ['极简主义设计', '微交互动画'], 'trend_adaptation_strategies': '结合品牌色彩与动态元素'
+                }, 
+                'version': '1.0.0', 'creation_date': '2025-06-20', 'designer_notes': '本VI系统专为社交媒体场景优化，确保品牌视觉一致性与传播效果'}
+'''

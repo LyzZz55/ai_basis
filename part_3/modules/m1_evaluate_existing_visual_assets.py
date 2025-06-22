@@ -4,12 +4,14 @@
 # 分析竞品视觉策略，研究与品牌行业和目标受众相关的社交媒体视觉设计趋势
 ########################################################################################
 
-from dotenv import load_dotenv
-import os
-from camel.agents import ChatAgent
+from colorama import Fore
+
+from camel.societies import RolePlaying
+from camel.utils import print_text_animated
 from camel.models import ModelFactory
-from camel.configs import ChatGPTConfig, SiliconFlowConfig
 from camel.types import ModelPlatformType, ModelType
+
+from camel.agents import ChatAgent
 import json
 
 import sys
@@ -20,13 +22,15 @@ sys.path.append(project_root)
 # 使用绝对导入
 from part_3.utils import clean_json_string
 
+import os
+from dotenv import load_dotenv
 load_dotenv()
-
+GEMINI_API_KEY = os.getenv("GEMINI_API")
+SF_API_KEY = os.getenv("FLOW_API")
 
 
 class BrandVisualAnalyzer:
-    GEMINI_API_KEY = os.getenv("GEMINI_API")
-    SF_API_KEY = os.getenv("FLOW_API")
+    
     
     def __init__(self):
         # 初始化Model
@@ -37,7 +41,7 @@ class BrandVisualAnalyzer:
                 "max_tokens": 4096,
                 "temperature": 0.7
             },
-            api_key=self.SF_API_KEY,
+            api_key=SF_API_KEY,
         )
         self.trend_analysis_model = ModelFactory.create(
             model_platform=ModelPlatformType.GEMINI,
@@ -46,7 +50,7 @@ class BrandVisualAnalyzer:
                 "max_tokens": 4096,
                 "temperature": 0.7
             },
-            api_key=self.GEMINI_API_KEY,
+            api_key=GEMINI_API_KEY,
         )
         
         
@@ -83,34 +87,32 @@ class BrandVisualAnalyzer:
         """
         
         self.TrendAnalysePrompt = """
-        作为品牌策略分析专家，请根据以下提供的品牌视觉资产数据和品牌策略手册数据，评估当前品牌视觉资产与品牌战略（人设、语调）的匹配度，及其在数字媒体的适用性。
+        请根据以下提供的品牌视觉资产数据和品牌策略手册数据，评估当前品牌视觉资产与品牌战略（人设、语调）的匹配度，及其在数字媒体的适用性。
 
 请严格按照以下JSON格式和内容要求输出您的分析结果, 不要出现多余的```json等包围, 输出为一行：
 
 { "competitor_visual_strategies": [ {"competitor_name": "从输入摘要中提取的竞品名称","visual_summary": "从输入摘要中总结该竞品的视觉特点"} ], "identified_industry_trends": [ {"name": "识别出的行业视觉趋势名称","description": "该趋势的简要描述","relevance_to_audience": "评估该趋势与目标受众视觉偏好的相关性（高/中/低），并可简要说明原因"} ], "social_media_specific_trends": { "trends_list": [  // 统一键名，值为各平台主流视觉趋势的合并数组 "该平台的主流视觉趋势1", "该平台的主流视觉趋势2" ] } }
-
-
-说明：
-- `competitor_visual_strategies`: 需要从输入的 `agent1_competitor_analysis_summary_str` 中解析并分别列出主要竞品的视觉策略。
-- `identified_industry_trends`: 结合 `brand_industry_str` 和 `target_audience_persona_data` 中的视觉偏好，列出当前行业内的主要视觉趋势及其与目标受众的匹配度。
-- `social_media_specific_trends`: 针对 `social_media_platform_names_str` 中列出的社交媒体平台，**提取各平台共性视觉趋势**，合并到`trends_list`数组中（例如：微信公众号和抖音的共同趋势可统一列出）。
-
-例如，如果输入是：
-agent1_competitor_analysis_summary_str: "竞品A主要使用明亮色彩和卡通形象，风格年轻化。竞品B视觉风格偏向成熟稳重，使用大量实景摄影图片。竞品C则强调简约和科技感，采用深色背景和抽象线条。"
-brand_industry_str: "在线教育"
-target_audience_persona_data = {
-  "audience_name": "Gen Z 学生",
-  "visual_preferences_keywords_list_str": "['简约', '潮酷', '真实感', 'meme风格']"
-}
-social_media_platform_names_str: "微信公众号,抖音"
-
-那么期望的输出为：
-
-{ "competitor_visual_strategies": [ {"competitor_name": "竞品A", "visual_summary": "明亮色彩、卡通形象、年轻化"}, {"competitor_name": "竞品B", "visual_summary": "成熟稳重、实景摄影"}, {"competitor_name": "竞品C", "visual_summary": "简约、科技感、深色背景、抽象线条"} ], "identified_industry_trends": [ {"name": "扁平化插画风", "description": "简洁、现代，常用于在线课程界面", "relevance_to_audience": "高 (符合'简约')"}, {"name": "真实场景短视频", "description": "展现学习场景，提升代入感", "relevance_to_audience": "高 (符合'真实感'和'潮酷')"} ], "social_media_specific_trends": { "trends_list": ["笔记式图文结合", "meme风格贴纸", "生活化场景短视频", "高饱和度配色"]  // 合并多平台趋势 } }
-
-请确保输出是完整的 JSON 对象，并且每个字段的内容都经过深入研究和分析，能够准确反映当前视觉趋势。
         """
-        
+    
+# 说明：
+# - `competitor_visual_strategies`: 需要从输入的 `agent1_competitor_analysis_summary_str` 中解析并分别列出主要竞品的视觉策略。
+# - `identified_industry_trends`: 结合 `brand_industry_str` 和 `target_audience_persona_data` 中的视觉偏好，列出当前行业内的主要视觉趋势及其与目标受众的匹配度。
+# - `social_media_specific_trends`: 针对 `social_media_platform_names_str` 中列出的社交媒体平台，**提取各平台共性视觉趋势**，合并到`trends_list`数组中（例如：微信公众号和抖音的共同趋势可统一列出）。
+
+# 例如，如果输入是：
+# agent1_competitor_analysis_summary_str: "竞品A主要使用明亮色彩和卡通形象，风格年轻化。竞品B视觉风格偏向成熟稳重，使用大量实景摄影图片。竞品C则强调简约和科技感，采用深色背景和抽象线条。"
+# brand_industry_str: "在线教育"
+# target_audience_persona_data = {
+#   "audience_name": "Gen Z 学生",
+#   "visual_preferences_keywords_list_str": "['简约', '潮酷', '真实感', 'meme风格']"
+# }
+# social_media_platform_names_str: "微信公众号,抖音"
+
+# 那么期望的输出为：
+
+# { "competitor_visual_strategies": [ {"competitor_name": "竞品A", "visual_summary": "明亮色彩、卡通形象、年轻化"}, {"competitor_name": "竞品B", "visual_summary": "成熟稳重、实景摄影"}, {"competitor_name": "竞品C", "visual_summary": "简约、科技感、深色背景、抽象线条"} ], "identified_industry_trends": [ {"name": "扁平化插画风", "description": "简洁、现代，常用于在线课程界面", "relevance_to_audience": "高 (符合'简约')"}, {"name": "真实场景短视频", "description": "展现学习场景，提升代入感", "relevance_to_audience": "高 (符合'真实感'和'潮酷')"} ], "social_media_specific_trends": { "trends_list": ["笔记式图文结合", "meme风格贴纸", "生活化场景短视频", "高饱和度配色"]  // 合并多平台趋势 } }
+
+# 请确保输出是完整的 JSON 对象，并且每个字段的内容都经过深入研究和分析，能够准确反映当前视觉趋势。    
         # 初始化Agent
         self.visual_analyzer_agent = ChatAgent(
             system_message=self.VisualImformationAnalysePrompt,
@@ -211,7 +213,7 @@ social_media_platform_names_str: "微信公众号,抖音"
 
         social_media_platform_names_list_str="['微信公众号', '微博', '小红书', '抖音']"
 
-        输出：
+        最终输出：
         trend_report = {
             "competitor_visual_strategies": [
                 {"competitor_name": "竞品A", "visual_summary": "明亮色彩、卡通形象、年轻化"},
@@ -226,15 +228,82 @@ social_media_platform_names_str: "微信公众号,抖音"
 
         '''
         
-        # TODO 如何调用搜索工具
-
-        # begin of research_visual_trends
-        usr_msg = f"""
+         # begin of research_visual_trends
+        usr_msg = f"""\n\n
     agent1_competitor_analysis_summary_str: {agent1_competitor_analysis_summary_str}
     brand_industry_str: {brand_industry_str}
     target_audience_persona_data = {target_audience_persona_data}
     social_media_platform_names_str: {social_media_platform_names_str}
             """
+        
+        task_prompt = "研究竞品视觉策略及与品牌行业、目标受众相关的社交媒体视觉趋势" + usr_msg
+        role_play_session = RolePlaying(
+            assistant_role_name="信息分析师",#设置AI助手角色名
+            assistant_agent_kwargs=dict(model=self.visual_analysis_model),
+            user_role_name="视觉趋势研究员",#设置用户角色名，在roleplay中，user用于指导AI助手完成任务
+            user_agent_kwargs=dict(model=self.visual_analysis_model),
+            task_prompt=task_prompt,
+            with_task_specify=True,
+            task_specify_agent_kwargs=dict(model=self.visual_analysis_model),
+            output_language='中文'#设置输出语言
+        )
+
+        print(
+            Fore.GREEN
+            + f"AI 助手系统消息:\n{role_play_session.assistant_sys_msg}\n"
+        )
+        print(
+            Fore.BLUE + f"AI 用户系统消息:\n{role_play_session.user_sys_msg}\n"
+        )
+
+        print(Fore.YELLOW + f"原始任务提示:\n{task_prompt}\n")
+        print(
+            Fore.CYAN
+            + "指定的任务提示:"
+            + f"\n{role_play_session.specified_task_prompt}\n"
+        )
+        print(Fore.RED + f"最终任务提示:\n{role_play_session.task_prompt}\n")
+
+        n = 0
+        input_msg = role_play_session.init_chat()
+        while n < 10:
+            n += 1
+            assistant_response, user_response = role_play_session.step(input_msg)
+
+            if assistant_response.terminated:
+                print(
+                    Fore.GREEN
+                    + (
+                        "AI 助手已终止。原因: "
+                        f"{assistant_response.info['termination_reasons']}."
+                    )
+                )
+                break
+            if user_response.terminated:
+                print(
+                    Fore.GREEN
+                    + (
+                        "AI 用户已终止。"
+                        f"原因: {user_response.info['termination_reasons']}."
+                    )
+                )
+                break
+
+            print_text_animated(
+                Fore.BLUE + f"AI 用户:\n\n{user_response.msg.content}\n"
+            )
+            print_text_animated(
+                Fore.GREEN + "AI 助手:\n\n"
+                f"{assistant_response.msg.content}\n"
+            )
+
+            if "CAMEL_TASK_DONE" in user_response.msg.content:
+                break
+
+            input_msg = assistant_response.msg
+
+
+       
         try:
             response = self.trend_analyzer_agent.step(usr_msg)
             strRes = response.msgs[0].content
@@ -296,14 +365,14 @@ def test_research_visual_trends():
         "微信公众号", "小红书"
     ]
     ag = BrandVisualAnalyzer()
-    res = ag.research_visual_trends(a, b, t, s[0])
-    print(res['competitor_visual_strategies'])
-    print(res['identified_industry_trends'])
-    print(res['social_media_specific_trends'])
+    ag.research_visual_trends(a, b, t, s[0])
+    # print(res['competitor_visual_strategies'])
+    # print(res['identified_industry_trends'])
+    # print(res['social_media_specific_trends'])
     
 # test_analyze_existing_visual_assets()
 # print('\n')
-# test_research_visual_trends()
+test_research_visual_trends()
 '''
 >>> test_analyze_existing_visual_assets()
 >>> print('\n')

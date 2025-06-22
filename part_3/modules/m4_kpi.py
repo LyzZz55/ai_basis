@@ -3,7 +3,115 @@
 # 基于Agent 1的初步KPI框架和Agent 2的内容规划，细化各平台、各内容类型的核心KPI，并建议数据分析维度和报告模板
 ########################################################################################
 
+import textwrap
 
+from camel.agents import ChatAgent
+from camel.messages import BaseMessage
+from camel.models import ModelFactory
+from camel.tasks import Task
+from camel.toolkits import FunctionTool, SearchToolkit
+from camel.types import ModelPlatformType, ModelType
+from camel.societies.workforce import workforce
+
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API")
+SF_API_KEY = os.getenv("FLOW_API")
+
+
+#  {
+#                 "campaign_name_str": "夏日焕新挑战赛",
+#                 "duration_str": "2025-07-01 to 2025-07-31",
+#                 "goal_str": "提升新品认知度与用户原创内容量",
+#                 "target_platforms_list_str": "['小红书', '抖音']",
+#                 "specific_kpi_focus_list_str": "['活动话题提及量', 'UGC作品提交数', '新品页面点击率']" # Agent 2 might suggest some focus KPIs
+#             }o
+# Add single agent worker
+# workforce.add_single_agent_worker(
+#     "Web Researcher", 
+#     worker=search_agent
+# )
+
+# # Add role-playing worker
+# workforce.add_role_playing_worker(
+#     "Analysis Team",
+#     assistant_role_name="Data Analyst", 
+#     user_role_name="Research Lead",
+#     assistant_agent_kwargs={"model": model, "tools": analysis_tools},
+#     user_agent_kwargs={"model": model},
+#     chat_turn_limit=5
+# )
+
+# # Add nested workforce
+# workforce.add_workforce(sub_workforce)
+
+class kpi_maker:
+    
+    def __init__(self):
+        
+        self.dpsk = ModelFactory.create(
+            model_platform=ModelPlatformType.SILICONFLOW,
+            model_type='Pro/deepseek-ai/DeepSeek-V3',
+            model_config_dict={
+                "max_tokens": 4096,
+                "temperature": 0.7
+            },
+            api_key=SF_API_KEY,
+        )
+        self.gemini = ModelFactory.create(
+            model_platform=ModelPlatformType.GEMINI,
+            model_type=ModelType.GEMINI_2_0_FLASH,
+            model_config_dict={
+                "max_tokens": 4096,
+                "temperature": 0.7
+            },
+            api_key=GEMINI_API_KEY,
+        )
+        
+        
+        # 创建Workforce  
+        self.workforce = workforce("效果追踪指标体系设计团队")  
+        
+        # 添加KPI框架分析专家  
+        self.workforce.add_single_agent_worker(  
+            "KPI框架分析专家，专门分析现有KPI框架并提出优化建议",  
+            worker=kpi_analyst_agent  
+        )  
+        
+        # 添加平台营销专家  
+        self.workforce.add_single_agent_worker(  
+            "平台营销专家，熟悉各大平台特性和指标体系",  
+            worker=platform_expert_agent  
+        )  
+        
+        # 添加数据分析师  
+        self.workforce.add_single_agent_worker(  
+            "数据分析师，设计分析维度和报告体系",  
+            worker=data_analyst_agent  
+        )  
+        
+        # 添加研究助手（配备搜索工具）  
+        self.workforce.add_single_agent_worker(  
+            "研究助手，负责收集行业最佳实践和最新趋势",  
+            worker=researcher_agent  
+        )
+    
+    def mk_kpi(task_description):
+        task = Task(  
+            content="""  
+            设计一个完整的效果追踪指标体系与分析维度建议：  
+            1. 基于现有KPI框架，细化各平台、各内容类型的核心、次核心、诊断性KPIs  
+            2. 覆盖认知层、互动层、引导层、转化层、品牌健康度五个层级  
+            3. 提供数据分析维度建议（内容主题、Persona、发布时段等）  
+            4. 制定报告频率建议（周报/月报）  
+            5. 确保指标体系的可操作性和实用性  
+            """,  
+            additional_info="需要考虑不同平台的特性差异和行业最佳实践",  
+            id="0"
+        )
+        
 
 
 # --- Helper functions for sub-modules within Module 7 ---

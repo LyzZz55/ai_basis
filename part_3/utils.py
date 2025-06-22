@@ -1,7 +1,43 @@
 
+import json
 
-# agent3/utils_output_generators.py
 
+
+
+def load_file_config(json_path: str) -> dict:
+    """从 JSON 文件加载文件配置"""
+    with open(json_path, 'r', encoding='utf-8') as f:
+        config = json.load(f)
+    return config
+
+
+def load_files_from_config(config: dict) -> dict:
+    """根据配置加载所有文件内容"""
+    file_contents = {}
+    for file_info in config.get("files", []):
+        file_path = file_info["path"]
+        comment = file_info.get("comment", "")
+
+        try:
+            with open(file_path, 'rb') as f:
+                file_content = f.read()
+
+            # 使用 CAMEL 的文件处理功能
+            file_obj = create_file_from_raw_bytes(file_content, file_path)
+
+            file_contents[file_path] = {
+                "content": file_obj.docs[0]["page_content"],
+                "comment": comment,
+                "type": file_info.get("type", "unknown")
+            }
+            output("BLACK", f"'{file_path}' read", None, True)
+        except Exception as e:
+            output("BLACK", f"无法加载文件 {file_path}: {e}", None, True)
+            return {}
+
+    return file_contents
+
+'''
 def write_social_media_vi_guide(data: dict, filename: str = "Social_Media_Visual_Identity_System_Guide.pdf") -> None:
     """
     生成社交媒体视觉识别系统指南PDF
@@ -67,6 +103,7 @@ def write_comprehensive_kpi_framework(data: dict, filename: str = "Comprehensive
 
 import os # ensure os is imported for path operations
 
+'''
 
 
 
@@ -79,7 +116,6 @@ def clean_json_string(json_str: str) -> str:
             if '```' in json_str:
                 json_str = json_str.split('```')[0]
             return json_str.strip()
-
 
 
 
