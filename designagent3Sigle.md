@@ -1,3 +1,9 @@
+### My
+
+    现有视觉资产评估 + 设计 VISystem（人类参加迭代） + 设计不同平台、不同内容的 Prompt + 生成图片 +
+
+                  + 根据Agent2的计划日历生成KPI
+
 #### **Agent 3: 视觉传达设计与发布执行细化 Agent (Visual Communication Design & Publication Execution Detailing Agent)**
 
 - **核心输入 (Core Inputs - Highly Detailed):**
@@ -10,7 +16,7 @@
   1.  **现有视觉资产评估与延展性分析 (Existing Visual Asset Audit & Extensibility Analysis):**
       - 评估现有 Logo、VI 手册等是否与 Agent 1 定义的品牌“人设”和“语调”匹配，是否适合在数字和社交媒体上传播。
       - 分析现有视觉资产在不同平台、不同内容形式上的应用潜力和局限性。
-  2.  ~~\*竞品与行业视觉趋势深度研究 (Competitor & Industry Visual Trend Deep Research):\*\*~~
+  2.  **竞品与行业视觉趋势深度研究 (Competitor & Industry Visual Trend Deep Research):**
       - 回顾 Agent 1 的竞品分析，侧重于其视觉传达策略（色彩、构图、字体、图片/视频风格、品牌元素应用）。
       - 研究当前社交媒体上与品牌行业和目标受众相关的视觉设计流行趋势（如特定滤镜风格、排版方式、动态效果、插画风格）。
   3.  **社交媒体视觉识别系统 (Social VI System) 构建与风格定义:**

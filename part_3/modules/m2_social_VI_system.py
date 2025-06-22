@@ -9,17 +9,49 @@ from camel.toolkits import FunctionTool
 import textwrap  
 from abc import ABC, abstractmethod  
 from typing import Dict, List, Optional  
-  
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+GEMINI_API_KEY = os.getenv("GEMINI_API")
+SF_API_KEY = os.getenv("FLOW_API")
+
+my_model = ModelFactory.create(  
+    model_platform=ModelPlatformType.GEMINI,
+    model_type=ModelType.GEMINI_2_0_FLASH,
+    model_config_dict={
+        "max_tokens": 4096,
+        "temperature": 0.7
+    },
+    api_key=GEMINI_API_KEY
+)
+dpskv3_model = ModelFactory.create(  
+    model_platform=ModelPlatformType.SILICONFLOW,
+    model_type='Pro/deepseek-ai/DeepSeek-V3',
+    model_config_dict={
+        "max_tokens": 4096,
+        "temperature": 0.7
+    },
+    api_key=SF_API_KEY,
+)
+
+trend_analysis_model = ModelFactory.create(
+            model_platform=ModelPlatformType.GEMINI,
+            model_type=ModelType.GEMINI_2_0_FLASH,
+            model_config_dict={
+                "max_tokens": 4096,
+                "temperature": 0.7
+            },
+            api_key=GEMINI_API_KEY,
+        )
+
 class VISystemDesigner(ABC):  
     """视觉识别系统设计师基类"""  
       
     def __init__(self, name: str, expertise: str, model_type: ModelType = ModelType.GPT_4O):  
         self.name = name  
         self.expertise = expertise  
-        self.model = ModelFactory.create(  
-            model_platform=ModelPlatformType.OPENAI,  
-            model_type=model_type,  
-        )  
+        
         self.agent = self._create_agent()  
       
     @abstractmethod  
@@ -33,7 +65,7 @@ class VISystemDesigner(ABC):
             role_name=self.name,  
             content=self._create_system_message(),  
         )  
-        return ChatAgent(system_message=sys_msg, model=self.model)  
+        return ChatAgent(system_message=sys_msg, model=my_model)  
   
 class BrandIdentityDesigner(VISystemDesigner):  
     """品牌识别设计师"""  
@@ -178,9 +210,9 @@ class VISystemDesignTeam:
       
     def __init__(self, team_name: str = "VI系统设计团队"):  
         self.team_name = team_name  
-        self.workforce = Workforce(team_name)  
+        self.workforce = Workforce(description=team_name,new_worker_agent_kwargs={'model':dpskv3_model},coordinator_agent_kwargs={'model':dpskv3_model},task_agent_kwargs={'model':dpskv3_model})
         self.designers = self._initialize_team()  
-        self._setup_workforce()  
+        self._setup_workforce()
       
     def _initialize_team(self) -> Dict[str, VISystemDesigner]:  
         """初始化设计团队成员"""  
@@ -278,4 +310,11 @@ def m2(brand_info: str, target_audience: str):
         """,  
         target_audience=target_audience 
     )
-    
+    # Process a task
+    result = vi_team.execute_design_project(design_task)
+    print(f"Result: {result}")
+
+
+
+
+
