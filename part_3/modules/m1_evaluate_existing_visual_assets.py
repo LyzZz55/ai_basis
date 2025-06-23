@@ -93,26 +93,7 @@ class BrandVisualAnalyzer:
 
 { "competitor_visual_strategies": [ {"competitor_name": "从输入摘要中提取的竞品名称","visual_summary": "从输入摘要中总结该竞品的视觉特点"} ], "identified_industry_trends": [ {"name": "识别出的行业视觉趋势名称","description": "该趋势的简要描述","relevance_to_audience": "评估该趋势与目标受众视觉偏好的相关性（高/中/低），并可简要说明原因"} ], "social_media_specific_trends": { "trends_list": [  // 统一键名，值为各平台主流视觉趋势的合并数组 "该平台的主流视觉趋势1", "该平台的主流视觉趋势2" ] } }
         """
-    
-# 说明：
-# - `competitor_visual_strategies`: 需要从输入的 `agent1_competitor_analysis_summary_str` 中解析并分别列出主要竞品的视觉策略。
-# - `identified_industry_trends`: 结合 `brand_industry_str` 和 `target_audience_persona_data` 中的视觉偏好，列出当前行业内的主要视觉趋势及其与目标受众的匹配度。
-# - `social_media_specific_trends`: 针对 `social_media_platform_names_str` 中列出的社交媒体平台，**提取各平台共性视觉趋势**，合并到`trends_list`数组中（例如：微信公众号和抖音的共同趋势可统一列出）。
 
-# 例如，如果输入是：
-# agent1_competitor_analysis_summary_str: "竞品A主要使用明亮色彩和卡通形象，风格年轻化。竞品B视觉风格偏向成熟稳重，使用大量实景摄影图片。竞品C则强调简约和科技感，采用深色背景和抽象线条。"
-# brand_industry_str: "在线教育"
-# target_audience_persona_data = {
-#   "audience_name": "Gen Z 学生",
-#   "visual_preferences_keywords_list_str": "['简约', '潮酷', '真实感', 'meme风格']"
-# }
-# social_media_platform_names_str: "微信公众号,抖音"
-
-# 那么期望的输出为：
-
-# { "competitor_visual_strategies": [ {"competitor_name": "竞品A", "visual_summary": "明亮色彩、卡通形象、年轻化"}, {"competitor_name": "竞品B", "visual_summary": "成熟稳重、实景摄影"}, {"competitor_name": "竞品C", "visual_summary": "简约、科技感、深色背景、抽象线条"} ], "identified_industry_trends": [ {"name": "扁平化插画风", "description": "简洁、现代，常用于在线课程界面", "relevance_to_audience": "高 (符合'简约')"}, {"name": "真实场景短视频", "description": "展现学习场景，提升代入感", "relevance_to_audience": "高 (符合'真实感'和'潮酷')"} ], "social_media_specific_trends": { "trends_list": ["笔记式图文结合", "meme风格贴纸", "生活化场景短视频", "高饱和度配色"]  // 合并多平台趋势 } }
-
-# 请确保输出是完整的 JSON 对象，并且每个字段的内容都经过深入研究和分析，能够准确反映当前视觉趋势。    
         # 初始化Agent
         self.visual_analyzer_agent = ChatAgent(
             system_message=self.VisualImformationAnalysePrompt,

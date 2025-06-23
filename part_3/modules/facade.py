@@ -9,10 +9,11 @@ from part_3.utils import load_file_config, load_files_from_config
 from part_3.modules.m1_evaluate_existing_visual_assets import BrandVisualAnalyzer
 from part_3.modules.m2_social_VI_system import VISystemDesignTeam, m2
 
+
 def perform_part_three():
     
     # 读取数据
-    json_part_3_input = load_file_config("./out/part_3_in.json")
+    json_part_3_input = load_file_config("3_input_files/part_3_in.json") # TODO 不要写死
     # print(json_part_3_input)
     needed_data_for_agent_three = load_files_from_config(json_part_3_input)
     # print(needed_data_for_agent_three)
@@ -34,8 +35,8 @@ def perform_part_three():
     
     # m2
     m2(
-        needed_data_for_agent_three.get("./out/Brand_Social_Media_Strategic_Playbook.txt", "Null"),
-        needed_data_for_agent_three.get("./out/Detailed_Target_Audience_Persona_Portfolie.txt", "Null"),
+        needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "Null"),
+        needed_data_for_agent_three.get("3_input_files/5_audience_personas.txt", "Null"),
     )
     
     # 把VISystem单独拎出来
