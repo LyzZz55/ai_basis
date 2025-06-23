@@ -317,8 +317,8 @@ class VISystemDesignTeam:
         additional_info = f"""
         品牌信息：{brand_info}
         目标受众：{target_audience}
-        已有视觉信息：{current_vi_info}
         """
+        # TODO  已有视觉信息：{current_vi_info} 
 
         return Task(
             content=task_content,
