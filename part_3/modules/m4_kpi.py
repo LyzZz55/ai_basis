@@ -3,6 +3,16 @@
 # 基于Agent 1的初步KPI框架和Agent 2的内容规划，细化各平台、各内容类型的核心KPI，并建议数据分析维度和报告模板
 ########################################################################################
 
+import sys
+from pathlib import Path
+# 获取项目根目录并添加到sys.path
+project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
+sys.path.append(project_root)
+# 使用绝对导入
+from part_3.utils import setup_logger
+logger = setup_logger(":( KPI_Worker", "tmp_log.log")
+
+
 import textwrap
 
 from camel.agents import ChatAgent
@@ -83,26 +93,31 @@ class KPIAnalysisAgent:
         result = benchmarks.get(platform, {}).get(kpi_type, "暂无基准数据")  
         return f"{platform}平台{kpi_type}基准: {result}"  
       
-    def expand_kpi_framework(self, simple_kpi_table: str) -> str:  
+    def expand_kpi_framework(self, simple_kpi_table: str, brand_info, content_calendar: str) -> str:  
         """扩展KPI框架的主要方法"""  
         prompt = f"""  
-        请基于以下简单KPI框架进行深度扩展和细化：  
   
-        {simple_kpi_table}  
   
         请执行以下任务：  
-        1. 使用搜索工具查找相关行业的KPI基准数据  
-        2. 为每个KPI提供详细的定义、计算公式和测量方法  
-        3. 分析KPI之间的关联性和相互影响  
-        4. 提供具体的优化策略和行动建议  
-        5. 补充遗漏的重要KPI指标  
-        6. 设计KPI监控和报告机制  
+      - 基于初步KPI框架和内容规划，细化每个平台、每种内容类型的核心、次核心、诊断性 KPIs。
+      - **示例：**
+        - **认知层：** 曝光量、覆盖人数、品牌搜索量增长。
+        - **互动层：** 点赞、评论、分享、收藏、转发率、互动率、UGC 产出数量。
+        - **引导层：** 点击率 (CTR)、落地页访问量、表单提交数、App 下载量。
+        - **转化层 (若可追踪)：** 销售额、订单量、ROI。
+        - **品牌健康度：** 粉丝增长数、净推荐值 (NPS)、品牌声量情感正负比。
+      - 建议数据分析的维度（如按内容主题、按 Persona、按发布时段）和报告频率（如周报/月报）。
   
         输出格式要求：  
         - 详细的KPI扩展表格  
         - 每个KPI的具体分析  
-        - 优化建议和行动计划  
-        - 监控预警机制设计  
+        
+        
+        简单的KPI框架{simple_kpi_table}
+        
+        根据提供的品牌信息：{brand_info}
+        
+        内容规划{content_calendar}
         """  
           
         response = self.agent.step(prompt)  
@@ -110,7 +125,6 @@ class KPIAnalysisAgent:
   
 # 使用示例  
 def create_kpi_analysis_agent():  
-    # 配置模型（使用您之前的Gemini配置）  
     model = ModelFactory.create(  
         model_platform=ModelPlatformType.SILICONFLOW,
         model_type='Pro/deepseek-ai/DeepSeek-V3',
@@ -124,23 +138,17 @@ def create_kpi_analysis_agent():
     return KPIAnalysisAgent(model)
 
 
-def kpi_working():
+def kpi_working(simple_kpi: str, brand_info: str, content_calendar: str):
     kpi_agent = create_kpi_analysis_agent()
-    simple_kpi = """  
-    | 营销目标          | 平台       | KPI类型               | 目标值       |    
-    |------------------|------------|----------------------|-------------|    
-    | 月光面膜认知度40% | 抖音       | 视频完播率           | ≥65%        |    
-    | 新增会员5,000人   | 全域       | 会员转化率           | 7.2%        |    
-    | UGC 10,000+      | 小红书     | UGC投稿量/周         | 800篇       |    
-    | 会员复购率35%     | 私域       | 90天复购频次         | ≥2.1次      |  
-    """  
     
     # 执行KPI扩展分析  
-    expanded_analysis = kpi_agent.expand_kpi_framework(simple_kpi)  
-    print("=== KPI扩展分析结果 ===")  
-    print(expanded_analysis)
+    expanded_analysis = kpi_agent.expand_kpi_framework(simple_kpi, brand_info, content_calendar)  
+    logger.info("=== KPI扩展分析结果 ===")  
+    logger.info(expanded_analysis)
+    logger.info("=== QED, KPI扩展分析结果 ===")  
+    
+    return expanded_analysis
 
-kpi_working()
 
 
 '''

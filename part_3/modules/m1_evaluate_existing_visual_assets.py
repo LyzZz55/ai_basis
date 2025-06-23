@@ -168,7 +168,6 @@ class BrandVisualAnalyzer:
                 print(f"analyze_existing_visual_assets, JSON解析错误： {e}")
         except Exception as e:
             print(f"An error occured when ask for AI response: {e}")
-        
         # end of code analyze_existing_visual_assets
 
 

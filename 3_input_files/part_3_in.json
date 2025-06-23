@@ -34,6 +34,11 @@
       "path": "3_input_files/logo.png",
       "comment": "品牌的logo",
       "type": "img"
+    },
+    {
+      "path": "3_input_files/7_kpi.txt",
+      "comment": "基本的KPI信息",
+      "type": "text"
     }
   ]
 }

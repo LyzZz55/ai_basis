@@ -10,6 +10,18 @@ import textwrap
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
 
+
+import sys
+from pathlib import Path
+# 获取项目根目录并添加到sys.path
+project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
+sys.path.append(project_root)
+# 使用绝对导入
+from part_3.utils import clean_json_string
+
+
+
+import json
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -27,6 +39,15 @@ gemini_model = ModelFactory.create(
 )
 dpskv3_model = ModelFactory.create(
     model_platform=ModelPlatformType.SILICONFLOW,
+    model_type='Pro/deepseek-ai/DeepSeek-V3',
+    model_config_dict={
+        "max_tokens": 8192,
+        "temperature": 0.7
+    },
+    api_key=SF_API_KEY,
+)
+dpskr1_model = ModelFactory.create(
+    model_platform=ModelPlatformType.SILICONFLOW,
     model_type='Pro/deepseek-ai/DeepSeek-R1',
     model_config_dict={
         "max_tokens": 8192,
@@ -34,6 +55,16 @@ dpskv3_model = ModelFactory.create(
     },
     api_key=SF_API_KEY,
 )
+
+import sys
+from pathlib import Path
+# 获取项目根目录并添加到sys.path
+project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
+sys.path.append(project_root)
+# 使用绝对导入
+from part_3.utils import setup_logger
+logger = setup_logger("GeneralControler", "tmp_log.log")
+
 
 class VISystemDesigner(ABC):
     """Abstract base class for Visual Identity System Designers."""
@@ -196,45 +227,7 @@ class VIOutputSynthesizer(VISystemDesigner):
               "background": [{"name": "背景色1", "hex": "#RRGGBB"}],
               "accessibilityNotes": "关于色彩组合在不同背景下的可读性和无障碍设计的说明。"
             },
-            "typographySystem": {
-              "primaryFont": {"fontFamily": "字体名称", "purpose": "主标题", "weights": ["Regular", "Bold"], "notes": "版权、多语言支持、跨平台显示效果等说明。"},
-              "secondaryFont": {"fontFamily": "字体名称", "purpose": "正文", "weights": ["Regular"], "notes": "版权、多语言支持、跨平台显示效果等说明。"},
-              "usageGuidelines": {
-                "h1": {"fontSize": "32px", "fontWeight": "Bold", "lineHeight": "1.2"},
-                "body": {"fontSize": "16px", "fontWeight": "Regular", "lineHeight": "1.5"}
-              }
-            },
-            "imageryStyleGuide": {
-              "photography": {
-                "theme": ["人物", "产品", "场景"],
-                "composition": ["黄金分割", "对称", "引导线"],
-                "lighting": "自然光优先，辅以柔和的影棚光。",
-                "colorTone": "整体偏暖色调，低饱和度，营造亲和感。",
-                "depthOfField": "多使用浅景深突出主体。",
-                "mood": "积极、真实、有活力。",
-                "postProcessing": "风格统一的滤镜，避免过度修饰。"
-              },
-              "illustrationAndGraphics": {
-                "style": "扁平风 (Flat Design)",
-                "lineWeight": "统一使用2px的线条粗细。",
-                "symbolSystem": "建立一套简洁、表意明确的图形符号系统。",
-                "dataVisualization": "图表设计规范，确保数据清晰传达，配色遵循品牌色彩体系。"
-              }
-            },
-            "videoStyleGuide": {
-              "pacing": "根据内容决定，产品介绍视频节奏快，品牌故事视频节奏舒缓。",
-              "transitions": "推荐使用简洁的淡入淡出或切割转场。",
-              "subtitleStyle": {"font": "与正文字体一致", "size": "24px", "color": "白色带半透明黑色描边"},
-              "musicStyle": ["轻快的电子音乐", "氛围感的纯音乐"],
-              "colorGrading": "建议使用统一的LUTs，以匹配摄影的色调。",
-              "animatedLogo": "在视频开头或结尾使用指定的动态Logo演绎效果。"
-            },
-            "layoutAndComposition": {
-              "gridSystem": "推荐使用8点栅格系统，保证跨平台一致性。",
-              "whiteSpace": "强调留白的使用，创造简洁、高级的视觉感受。",
-              "visualHierarchy": "通过大小、颜色、位置关系建立清晰的信息层级。",
-              "logoUsage": "定义Logo在不同版式中的最小尺寸、安全边距和禁用场景。"
-            }
+           
           }
         }
         请严格按照此JSON结构和字段要求进行填充和输出。
@@ -248,9 +241,9 @@ class VISystemDesignTeam:
         self.team_name = team_name
         self.workforce = Workforce(
             description=team_name,
-            new_worker_agent_kwargs={'model': gemini_model},
+            new_worker_agent_kwargs={'model': dpskv3_model},
             coordinator_agent_kwargs={'model': dpskv3_model},
-            task_agent_kwargs={'model': gemini_model}
+            task_agent_kwargs={'model': dpskv3_model}
         )
         self.designers = self._initialize_team()
         self._setup_workforce()
@@ -341,7 +334,7 @@ class VISystemDesignTeam:
         }
 
 
-def m2( brand_info: str, target_audience: str):
+def m2( brand_info: str, target_audience: str) -> dict:
     """Main function example"""
     # Create VI system design team
     vi_team = VISystemDesignTeam(f"VI设计团队")
@@ -353,11 +346,11 @@ def m2( brand_info: str, target_audience: str):
         1. 设计一个现代、简约且具有科技感的品牌标识。
         2. 建立完整的色彩和字体系统。
         3. 体现品牌的创新、专业和用户友好的核心价值观。
-        4. 视觉系统需要高度适配小红书、抖音、Bilibili等主流社交媒体平台。
         """,
         target_audience=target_audience
     )
     # Process a task
     result = vi_team.execute_design_project(design_task)
     print("---### Final VI System Design (JSON)---")
-    print(result)
+    logger.info(result)
+    return json.loads(clean_json_string(result))

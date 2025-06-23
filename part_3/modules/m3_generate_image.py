@@ -23,10 +23,15 @@ from camel.toolkits import HumanToolkit
 from camel.agents import ChatAgent  
 from camel.models import ModelFactory
 
-import logging
-# 配置日志
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger('ImageGenerator')
+import sys
+from pathlib import Path
+# 获取项目根目录并添加到sys.path
+project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
+sys.path.append(project_root)
+# 使用绝对导入
+from part_3.utils import setup_logger
+logger = setup_logger("Imagegenerator", "tmp_log.log")
+
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API")
@@ -41,6 +46,35 @@ dpsk_model = ModelFactory.create(
     api_key=SF_API_KEY,
 )
 
+
+def generate_visual_prompt(task, vi_system) -> str:
+    """
+    根据内容日历条目和VI系统，生成主视觉prompt
+    """
+    prompt = f"""
+你是一名资深社交媒体视觉设计师。请根据以下内容日历条目和品牌VI系统，为该内容生成一条适合AI图像生成的主视觉prompt，要求：
+- 充分体现内容主题和目标平台的风格
+- 严格遵循品牌VI系统的色彩、字体、图像风格等规范
+- 语言简洁、具体，适合直接输入AI图像生成API
+- 输出仅包含英文prompt，无需解释
+
+内容日历条目：
+{json.dumps(task, ensure_ascii=False)}
+
+品牌VI系统摘要：
+{json.dumps(vi_system, ensure_ascii=False)}
+"""
+    return prompt
+
+def generate_main_visual_for_task_prompt(task, vi_system) -> str:
+        """
+        为单个内容日历条目生成主视觉图片，并返回图片路径
+        """
+        prompt = generate_visual_prompt(task, vi_system)
+        # 1. 生成英文prompt
+        response = dpsk_model.step(prompt)
+        ai_prompt = response.msgs[0].content.strip()
+        return ai_prompt
 
 from PIL import Image, ImageOps
 def image_to_color_ascii(image_path, width=100, height=None, inverted=False):
