@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "path": "./out/Comprehensive_Market_And_Competitor_Intelligence_Report.txt",
+      "comment": "品牌现状评估, 竞争格局分析，行业趋势和机会洞察",
+      "type": "text"
+    },
+    {
+      "path": "./out/Detailed_Target_Audience_Persona_Portfolie.txt",
+      "comment": "核心用户画像",
+      "type": "text"
+    }
+  ]
+}
