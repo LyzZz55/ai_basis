@@ -29,9 +29,7 @@ from pathlib import Path
 project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
 sys.path.append(project_root)
 # 使用绝对导入
-from part_3.utils import setup_logger
-logger = setup_logger("Imagegenerator", "tmp_log.log")
-
+from part_3.utils import output
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API")
@@ -45,6 +43,43 @@ dpsk_model = ModelFactory.create(
     },
     api_key=SF_API_KEY,
 )
+agent = ChatAgent(
+    model=dpsk_model,   
+    system_message="""
+你是一名资深文生图提示词大师， 根据内容日历条目生成英文提示词，无需解释。
+
+例子：
+任务条目：{'task_name': '7月抖音干细胞科普动画制作', 'task_description': "制作30秒动画《5步看懂干细胞变护肤品》，配'微囊不是魔法，是慢释放小水弹'标语，植入会员注册入口，目标完播率≥65%", 'platform': '抖音', 'time': '7月2日', 'theme': '植物干细胞科普周'}
+VI系统摘要：{'brandName': 'EcoGarden', 'brandSlogan': None, 'coreValues': ['科技自然', '透明可信', '简约高效'], 'coreElements': ['植物干细胞', '可持续发展'], 'logo': {'description': '抽象化的植物叶脉或细胞结构与几何线条或科技元素相结合，简洁现代', 'mainColor': '#a7d1ab', 'secondaryColors': ['#f5f5dc', '#d3d3d3', '#808080', '亮绿色', '金色'], 'font': {'primary': '现代感强、易读性高的无衬线字体', 'secondary': '衬线字体'}, 'variations': ['不同尺寸', '不同版本', '动画版本']}, 'colorPalette': {'mainColor': '#a7d1ab', 'secondaryColors': ['#f5f5dc', '#d3d3d3', '#808080'], 'accentColors': ['亮绿色', '金色'], 'platformAdjustment': '根据平台差异，适度调整色彩饱和度和亮度'}, 'layoutSystem': {'designPrinciple': '模块化设计，例如成分卡片、技术卡片、环保数据卡片等', 'whitespace': '充分利用留白，清晰划分信息层级，确保易读性和视觉舒适度'}, 'platformStrategies': {'Douyin': '强调动感和视觉冲击', 'Xiaohongshu': '注重生活化和用户生成内容', 'Instagram': '保持高度视觉一致性'}, 'ARVRApplications': {'AR': '产品成分溯源和碳足迹追踪的可视化', 'VR': '微距摄影或3D动画展现植物干细胞的科技感'}, 'userExperience': {'principles': ['易用性', '一致性', '可访问性'], 'testing': '建议进行用户测试以确保设计方案的有效性'}, 'iteration': '持续关注市场趋势，并根据用户反馈不断迭代优化VI系统，确保其长期有效性'}
+
+输出：Visual Style:
+
+Adopt a mixed style of 3D cartoon + flat design, blending sci-tech aesthetics with biological natural elements to suit TikTok's young audience.
+Showcase dynamic previews of microcapsule release as fluid animations, implying the "slow-release" concept to enhance visual appeal.
+
+Core Element Composition:
+
+Central Visual:
+A giant transparent microcapsule sphere (semi-transparent white with light blue gradient) as the main body, containing fluorescent green plant stem cell particles inside (resembling water bomb texture), with particles slowly releasing in dynamic light effects.
+The microcapsule is surrounded by vector illustrations of plant stems and leaves (e.g., buds, leaf veins) to emphasize the "plant stem cell" theme.
+Process Hints:
+Five floating mini circular icons around the microcapsule, each representing the 5 steps ("extraction → cultivation → encapsulation → penetration → skincare") with simple line drawings (e.g., microscope, petri dish, capsule, skin texture), forming a circular motion path to guide the viewer's gaze.
+Interactive Elements:
+A gradient registration button (blue-purple gradient + white border) floats in the lower right corner, with the text "Unlock Stem Cell Secrets" and a membership icon (key/gift box shape), surrounded by a breathing light effect.
+
+Color and Lighting:
+
+Primary tones: tech blue (#1E88E5) + life green (#43A047) gradient, with a light gray transparent grid background simulating lab petri dish texture.
+Light effects: golden particle trails for microcapsule releases, soft glows outlining plant elements to enhance three-dimensionality.
+
+Slogan Presentation:
+
+The slogan "Microcapsules aren’t magic—they’re slow-release water bombs" is displayed above the microcapsule in handwritten typography, with font colors matching the microcapsule gradient, and a water drop emoji (💦) at the end to reinforce the "water bomb" association.
+
+TikTok Scene Adaptation:
+
+    """
+)
 
 
 def generate_visual_prompt(task, vi_system) -> str:
@@ -52,17 +87,20 @@ def generate_visual_prompt(task, vi_system) -> str:
     根据内容日历条目和VI系统，生成主视觉prompt
     """
     prompt = f"""
-你是一名资深社交媒体视觉设计师。请根据以下内容日历条目和品牌VI系统，为该内容生成一条适合AI图像生成的主视觉prompt，要求：
-- 充分体现内容主题和目标平台的风格
-- 严格遵循品牌VI系统的色彩、字体、图像风格等规范
-- 语言简洁、具体，适合直接输入AI图像生成API
+请根据以下任务条目和品牌VI系统，为该内容生成一条prompt， 用来生成这个任务的主视觉，要求：
+- 适当遵循品牌VI系统的色彩、字体、图像风格等规范
+- 语言简洁、具体，能够直接输入文生图模型
 - 输出仅包含英文prompt，无需解释
 
-内容日历条目：
+任务条目，即需要生产主视觉图片的任务：
 {json.dumps(task, ensure_ascii=False)}
 
 品牌VI系统摘要：
 {json.dumps(vi_system, ensure_ascii=False)}
+9:16 vertical composition, with key elements concentrated in the upper-middle screen (avoiding obstruction by TikTok's bottom interactive bar).
+The microcapsule animation preview reflects the fast pace of a "30-second video," with arrow animations suggesting time flow (e.g., a left-to-right timeline light band).
+
+
 """
     return prompt
 
@@ -72,7 +110,7 @@ def generate_main_visual_for_task_prompt(task, vi_system) -> str:
         """
         prompt = generate_visual_prompt(task, vi_system)
         # 1. 生成英文prompt
-        response = dpsk_model.step(prompt)
+        response = agent.step(prompt)
         ai_prompt = response.msgs[0].content.strip()
         return ai_prompt
 
@@ -135,16 +173,16 @@ def print_img_to_terminal_through_img_path(img_path: str):
     if ascii_img:
         print(ascii_img)
     else:
-        logger.error("展示图片错误, ascii_img为None")
+        output("RED", "展示图片错误, ascii_img为None", None, False)
 
-def save_image(self, image: Image.Image, path: str) -> bool:
+def save_image(image: Image.Image, path: str) -> bool:
         """保存图片到指定路径"""
         try:
             image.save(path)
-            logger.info(f"图片已保存至: {path}")
+            output("BLACK", f"图片已保存至: {path}", None, False)
             return True
         except Exception as e:
-            logger.error(f"保存图片失败: {e}")
+            output("RED", f"保存图片失败: {e}", None, False)
             return False
 
 class ImageGenerator:
@@ -164,16 +202,16 @@ class ImageGenerator:
         self.human_iterater_agent = self._init_human_agent(dpsk_model)
         self.iteration = 0
         self.max_iteration = max_iteration
-        logger.info(f"图片生成器初始化完成，使用模型: {model_name}")
+        output("BLACK", f"图片生成器初始化完成，使用模型: {model_name}", None, False)
     
     def _init_client(self):
         """初始化Gemini API客户端"""
         try:
             return genai.Client(api_key=GEMINI_API_KEY)
         except Exception as e:
-            logger.error(f"初始化Gemini客户端失败: {e}")
+            output("RED", f"初始化Gemini客户端失败: {e}", None, False)
             raise
-    def _init_human_agent(model: str) -> ChatAgent:
+    def _init_human_agent(self, model: str) -> ChatAgent:
         """
         创建并返回一个配置好人类交互工具的静态代理
         
@@ -226,7 +264,7 @@ class ImageGenerator:
                 full_prompt = content
             else:
                 full_prompt = self._match_VI_requirement(content)
-            logger.info(f"生成图片的提示词: {full_prompt}, 图片将输出至：{output_path}")
+            output("BLACK", f"生成图片的提示词: {full_prompt}, 图片将输出至：{output_path}", None, False)
             
             # 调用Gemini API生成图片
             response = self.client.models.generate_content(
@@ -245,7 +283,7 @@ class ImageGenerator:
             return image
             
         except Exception as e:
-            logger.error(f"生成图片失败: {e}")
+            output("RED", f"生成图片失败: {e}", None, False)
             return None
     
     def iter_generate(self, original_requirement: str, output_path: str = "./tmpImg.png"):
@@ -260,7 +298,7 @@ class ImageGenerator:
             out = self.human_iterater_agent.step(human_improve_user_msg).msgs[0].content
             self.iteration += 1
             if 'Over' in out:
-                logger.info("图片生成，Agent判断出人类满意")
+                output("BLACK", "图片生成，Agent判断出人类满意", None, False)
                 break
             else:
                 self.generate_image_from_content(out, True, output_path=output_path+self.iteration)
@@ -270,21 +308,21 @@ class ImageGenerator:
         """处理Gemini API响应并提取图片"""
         try:
             if not response.candidates:
-                logger.warning("API响应中没有候选结果")
+                output("RED", "API响应中没有候选结果", None, False)
                 return None
                 
             candidate = response.candidates[0]
             for part in candidate.content.parts:
                 if part.inline_data is not None:
                     image = Image.open(BytesIO(part.inline_data.data))
-                    logger.info(f"成功获取图片，尺寸: {image.size}")
+                    output("BLACK", f"成功获取图片，尺寸: {image.size}", None, False)
                     return image
                     
-            logger.warning("响应中没有图片数据")
+            output("BLACK", "响应中没有图片数据", None, False)
             return None
             
         except Exception as e:
-            logger.error(f"处理API响应失败: {e}")
+            output("RED", f"处理API响应失败: {e}", None, False)
             return None
     
     

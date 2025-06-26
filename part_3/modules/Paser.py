@@ -13,6 +13,14 @@ GEMINI_API_KEY = os.getenv("GEMINI_API")
 SF_API_KEY = os.getenv("FLOW_API")
 
 
+import sys
+from pathlib import Path
+# 获取项目根目录并添加到sys.path
+project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
+sys.path.append(project_root)
+# 使用绝对导入
+from part_3.utils import output
+
 gemini_model = ModelFactory.create(
     model_platform=ModelPlatformType.GEMINI,
     model_type=ModelType.GEMINI_1_5_FLASH,
@@ -81,13 +89,13 @@ task_agent = ChatAgent(
 
 def contents_calendar_to_list(marketing_plan_text: str)-> dict:
     # 使用Agent分析营销计划  
+    output("BLACK", "Start: 分析营销计划", None, False)
     response = task_agent.step(f"""  
     营销计划：  
     {marketing_plan_text}  
-      
     请返回JSON格式的任务列表。  
     """)  
-      
+    output("BLACK", "End: 分析营销计划", None, False)
     return json.loads(response.msgs[0].content)
 
 

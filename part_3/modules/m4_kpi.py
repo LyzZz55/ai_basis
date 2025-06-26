@@ -9,9 +9,7 @@ from pathlib import Path
 project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
 sys.path.append(project_root)
 # 使用绝对导入
-from part_3.utils import setup_logger
-logger = setup_logger(":( KPI_Worker", "tmp_log.log")
-
+from part_3.utils import output
 
 import textwrap
 
@@ -143,9 +141,6 @@ def kpi_working(simple_kpi: str, brand_info: str, content_calendar: str):
     
     # 执行KPI扩展分析  
     expanded_analysis = kpi_agent.expand_kpi_framework(simple_kpi, brand_info, content_calendar)  
-    logger.info("=== KPI扩展分析结果 ===")  
-    logger.info(expanded_analysis)
-    logger.info("=== QED, KPI扩展分析结果 ===")  
     
     return expanded_analysis
 

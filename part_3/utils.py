@@ -15,6 +15,9 @@ def save_to_file(content: str, file_path: str,io_pattern = 'a' , encoding: str =
 def output(color,message,f,std_flag):
     if std_flag:
         print(colored(message,color.lower()))
+    else:
+        print(message)
+        
     if f is not None:
         f.write("--------"+color+"--------\n"
             +message
@@ -27,10 +30,10 @@ def load_file_config(json_path: str) -> dict:
     with open(json_path, 'r', encoding='utf-8') as f:
         config = json.load(f)
     return config
+
 from PIL import Image
 import base64
 import io
-
 def load_files_from_config(config: dict) -> dict:
     """根据配置加载所有文件内容"""
     file_contents = {}
@@ -97,44 +100,6 @@ def load_files_from_config(config: dict) -> dict:
             return {}
             
     return file_contents    
-
-import logging
-def setup_logger(logger_name: str, log_file_path: str = 'image_generator.log') -> logging.Logger:
-    """
-    配置日志系统，同时输出到终端和文件
-    
-    Args:
-        log_file_path: 日志文件路径，默认为 'image_generator.log'
-        
-    Returns:
-        配置好的 Logger 实例
-    """
-    # 创建名为 'ImageGenerator' 的日志器
-    logger = logging.getLogger(logger_name)
-    
-    # 确保日志器没有重复的处理器
-    if not logger.handlers:
-        # 设置日志级别
-        logger.setLevel(logging.INFO)
-        
-        # 创建格式化器
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        
-        # 创建并配置文件处理器
-        file_handler = logging.FileHandler(log_file_path, encoding='utf-8')
-        file_handler.setLevel(logging.INFO)
-        file_handler.setFormatter(formatter)
-        
-        # 创建并配置流处理器（输出到终端）
-        stream_handler = logging.StreamHandler()
-        stream_handler.setLevel(logging.INFO)
-        stream_handler.setFormatter(formatter)
-        
-        # 将处理器添加到日志器
-        logger.addHandler(file_handler)
-        logger.addHandler(stream_handler)
-    
-    return logger
 
 
 
