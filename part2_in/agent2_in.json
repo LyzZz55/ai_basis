@@ -1,0 +1,19 @@
+{
+  "files": [
+    {
+      "path": "outputs/Brand_Social_Media_Strategic_Playbook.md",
+      "comment": "品牌基础资料和营销目标和初步 KPI 框架和产品服务详情",
+      "type": "text"
+    },
+    {
+      "path": "outputs/Comprehensive_Market_And_Competitor_Intelligence_Report.md",
+      "comment": "竞争对手清单和行业基本趋势",
+      "type": "text"
+    },
+    {
+      "path": "outputs/Detailed_Target_Audience_Persona_Portfolio.md",
+      "comment": "现有受众理解",
+      "type": "text"
+    }
+  ]
+}

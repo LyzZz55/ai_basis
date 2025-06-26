@@ -369,7 +369,7 @@ class ContentCreativityAgent:
         print("所有输出文件均已保存在 'outputs' 文件夹下。")
 
 
-def agent_2():
+def main(input_config_path: str):
     SILICONFLOW_API_URL = "https://api.siliconflow.cn/v1"
     SILICONFLOW_MODEL_NAME = "deepseek-ai/DeepSeek-V3"  # 我自己的api最高能使用的模型就是V3,如果老师分发的API能使用更先进的模型,可以后续进行更改,但必须保证模型可调用.
     print(f"正在初始化模型 (Initializing model): {SILICONFLOW_MODEL_NAME}")
@@ -383,7 +383,7 @@ def agent_2():
     )
 
     # --- Agent 实例化与执行 ---
-    input_config_path = "part2_in/agent1_outputs.json"
+    input_config_path
     try:
         content_agent = ContentCreativityAgent(model, input_config_path)
         content_agent.execute_planning_flow()
