@@ -37,6 +37,8 @@ if __name__ == "__main__":
     agent_1_main_end_time=time()
     output("RED","agent One total time: %d"%(agent_1_main_end_time-main_start_time),None,True)
     
+    agent_all_out_path = args.output
+    process_and_save_delimited_blocks
     
     
 

@@ -142,6 +142,30 @@ def extract_content_between_delimiters(input_str: str, N: int) -> list[str]:
             
     return all_matches
 
+
+
+def process_and_save_delimited_blocks(txt_path: str, N: int, output_dir: str, output_name:list):
+    """
+    从txt_path读取内容，调用extract_content_between_delimiters，得到list，
+    并将每个块分别输出到output_dir下
+    """
+    # 读取文件内容
+    with open(txt_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    blocks = extract_content_between_delimiters(content, N)
+    
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # 依次保存每个块
+    for block in blocks:
+        out_path = os.path.join(output_dir, output_name)
+        with open(out_path, 'w', encoding='utf-8') as out_f:
+            out_f.write(block.strip())
+        output("GREY", f"已输出: {out_path}")
+    
+    output("GREEN", f"{txt_path}已拆分输出为{N}块。名称分别为{output_name}")
+
 json_out_agent = ChatAgent(
     system_message="请把输入的json字符串用有逻辑的语言输出，不用添加别的信息",
     model=dpskv3_model,
@@ -149,3 +173,16 @@ json_out_agent = ChatAgent(
 )
 def JsonToNL(content):
     return json_out_agent.step(f"{content}")
+
+from typing import Dict, Any
+def deal_data_for_agent_3(needed_data_for_agent_three: Dict):
+    res = {}
+    for key in needed_data_for_agent_three:
+        if 'kpi' in key:  # 检查key中是否包含字符'A'
+            res["kpi"] = needed_data_for_agent_three[key]
+        elif 'audience' in key:
+            res["audience"] = needed_data_for_agent_three[key]
+        elif 'content_calendar' in key:
+            res["content_calendar"] = needed_data_for_agent_three[key]
+            
+    return res

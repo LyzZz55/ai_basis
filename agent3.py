@@ -11,22 +11,24 @@ from agent3_modules.m1_evaluate_existing_visual_assets import research_visual_tr
 from agent3_modules.m2_social_VI_system import  m2
 from agent3_modules.m3_generate_image import generate_img, generate_main_visual_for_task_prompt
 from agent3_modules.m4_kpi import kpi_working
-from agent3_modules.Paser import contents_calendar_to_list, JsonToNL
+from agent3_modules.Paser import contents_calendar_to_list, JsonToNL, deal_data_for_agent_3
 from agent3_modules.m3_out_stragy import refined_distribution_and_engagement_strategy
 
 def perform_part_three(part_3_input_config='part3_in/in.json', parent_out_path='outputs'):
     # 读取数据
     json_part_3_input = load_file_config(part_3_input_config)
-    output("BLACK","input config: {json_part_3_input}")
+    output("GREY","input config: {json_part_3_input}")
     needed_data_for_agent_three = load_files_from_config(json_part_3_input)
-    output("BLACK", f"data for agent3 {needed_data_for_agent_three}")
+    output("GREY", f"data for agent3 {needed_data_for_agent_three}")
 
+    dealed_data_for_agent_3 = deal_data_for_agent_3(needed_data_for_agent_three)
+    
     m1_out = research_visual_trends(
         needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "no brand story now"),
         needed_data_for_agent_three.get("3_input_files/4_industry_trends.txt", "no industry trends now"),
     )
     output("BLACK", f"m1的输出: \n{m1_out}")
-    output("BLACK", "QED -----------------------------")
+    output("GREY", "QED -----------------------------")
     
     m2_out = m2(
         needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "Null"),
@@ -36,7 +38,6 @@ def perform_part_three(part_3_input_config='part3_in/in.json', parent_out_path='
     output("BLACK", f"m2的输出: {m2_out}")
     human_vi = JsonToNL(m2_out)
     save_to_file(f"{human_vi}", parent_out_path, "Social_Media_Visual_Identity_System_Guide.md")
-    
     
     # KPI生成
     kpi = kpi_working(
