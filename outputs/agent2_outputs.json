@@ -1,0 +1,34 @@
+{
+    "files": [
+        {
+            "path": "outputs/Content_Idea_Repository.xlsx",
+            "comment": "内容创意库及优先级排序矩阵",
+            "type": "excel"
+        },
+        {
+            "path": "outputs/Detailed_Content_Series_Blueprints.txt",
+            "comment": "内容主题系列的详细规划蓝图",
+            "type": "text"
+        },
+        {
+            "path": "outputs/Cross-Platform_Content_Repurposing_Guide.txt",
+            "comment": "旗舰内容的“一鱼多吃”跨平台分发指南",
+            "type": "text"
+        },
+        {
+            "path": "outputs/Flagship_Brief_1_程序员“代码续命”能量包.txt",
+            "comment": "旗舰内容 '程序员“代码续命”能量包' 的深度策划案/大纲",
+            "type": "text"
+        },
+        {
+            "path": "outputs/Draft_Copy_AB_Testing_Proposals.txt",
+            "comment": "社交媒体帖子的A/B测试文案初稿",
+            "type": "text"
+        },
+        {
+            "path": "outputs/Master_Editorial_Calendar.xlsx",
+            "comment": "未来1-3个月的精细化内容日历",
+            "type": "excel"
+        }
+    ]
+}
