@@ -7,7 +7,7 @@ except ImportError:
 
 from utils import output
 import agent1
-
+from agent3_modules.Paser import process_and_save_delimited_blocks
 from time import time
 import argparse
 
@@ -33,12 +33,15 @@ if __name__ == "__main__":
         exit(1)
 
 
-    agent1.main(args)
+    # agent1.main(args)
     agent_1_main_end_time=time()
     output("RED","agent One total time: %d"%(agent_1_main_end_time-main_start_time),None,True)
     
-    agent_all_out_path = args.output
-    process_and_save_delimited_blocks
+    agent_one_out_path = args.output
+    process_and_save_delimited_blocks(agent_one_out_path, 3, "outputs", ["Comprehensive_Market_And_Competitor_Intelligence_Report", "Detailed_Target_Audience_Persona_Portfolio", "Brand_Social_Media_Strategic_Playbook"])
+    
+    
+    
     
     
 

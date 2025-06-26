@@ -245,6 +245,7 @@ def execute_subtasks_automatically(agents, main_task_content,f,std_flag):
             b) 信息架构： 核心信息屋 (Message House) 详情。
             c) 平台战略： 推荐的核心社交媒体平台组合，各平台在营销矩阵中的角色定位、核心目标和内容方向。
             d) 初步KPI框架： 建议与营销目标和平台角色挂钩的初步关键绩效指标 (KPIs) 类型。
+        请在输出这三个报告时分别在头部和尾部加上标识符"report_x_start","report_x_end",其中x为阿拉伯数字1,2,3等
         """
     ]  
       

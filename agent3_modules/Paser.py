@@ -19,7 +19,7 @@ from pathlib import Path
 project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
 sys.path.append(project_root)
 # 使用绝对导入
-from part_3.utils import output
+from utils import output
 
 gemini_model = ModelFactory.create(
     model_platform=ModelPlatformType.GEMINI,
@@ -103,52 +103,34 @@ def contents_calendar_to_list(marketing_plan_text: str)-> dict:
 import re
 def extract_content_between_delimiters(input_str: str, N: int) -> list[str]:
     """
+    提取 report_x_start 到 report_x_end 之间的内容，x 从 1 到 N。
     Args:
         input_str (str): 需要搜索的源字符串。
-        N (int): 一个正整数，定义了分隔符中数字 n 的最大值 (n 从 1 到 N)。
-
+        N (int): 最大编号。
     Returns:
-        list[str]: 一个包含所有匹配到的内容的字符串列表。
-                   如果没有找到任何匹配项，则返回一个空列表。
+        list[str]: 所有匹配到的内容列表。
     """
-    # 存储所有找到的结果
     all_matches = []
-    
-    # N 必须是正整数，否则 range(1, N + 1) 会为空，直接返回空列表，符合预期
     if N < 1:
         return []
-
-    # 循环遍历数字 n 从 1 到 N
     for n in range(1, N + 1):
-        # 为当前的 n 构建正则表达式
-        # - f-string 用于将变量 n 插入到字符串中
-        # - -{n}- : 匹配开始的分隔符，例如 '-1-' 或 '-2-'
-        # - (.*?) : 这是一个非贪婪的捕获组。
-        #   - ()   : 定义一个捕获组，这是 re.findall 将会返回的部分。
-        #   - .    : 匹配除换行符外的任何字符。
-        #   - * : 匹配前面的元素零次或多次。
-        #   - ?    : 将 '*' 变为非贪婪模式，意味着它会匹配尽可能短的字符串，
-        #            直到遇到下一个 '-{n}-'。这是防止匹配到多个块的关键。
-        # - -{n}- : 匹配结束的分隔符
-        pattern = f"-{n}-(.*?)-{n}-"
-        
-        # 使用 re.findall 查找所有不重叠的匹配项
-        # re.findall 会返回一个列表，其中只包含捕获组 '()' 中的内容
-        matches = re.findall(pattern, input_str)
-        
-        # 将当前 n 找到的所有匹配项添加到总列表中
+        # 支持跨多行
+        pattern = rf"report_{n}_start(.*?)report_{n}_end"
+        matches = re.findall(pattern, input_str, re.DOTALL)
         if matches:
-            all_matches.extend(matches)
-            
+            all_matches.extend([m.strip() for m in matches])
     return all_matches
 
 
 
-def process_and_save_delimited_blocks(txt_path: str, N: int, output_dir: str, output_name:list):
+def process_and_save_delimited_blocks(txt_path: str, N: int, output_dir: str, output_names:list, output_json_name: str = 'agent1_outputs.json'):
     """
     从txt_path读取内容，调用extract_content_between_delimiters，得到list，
     并将每个块分别输出到output_dir下
     """
+    if not N == len(output_names):
+        output("RED", "process_and_save_delimited_blocks： N与output_names长度不匹配")
+        return {}
     # 读取文件内容
     with open(txt_path, 'r', encoding='utf-8') as f:
         content = f.read()
@@ -158,13 +140,26 @@ def process_and_save_delimited_blocks(txt_path: str, N: int, output_dir: str, ou
     os.makedirs(output_dir, exist_ok=True)
     
     # 依次保存每个块
-    for block in blocks:
-        out_path = os.path.join(output_dir, output_name)
+    output_json = []
+    for idx, block in enumerate(blocks):
+        out_path = os.path.join(output_dir, output_names[idx] + ".md")
         with open(out_path, 'w', encoding='utf-8') as out_f:
             out_f.write(block.strip())
         output("GREY", f"已输出: {out_path}")
+        output_json.append({
+            "path": out_path,
+            "comment": output_names[idx],
+            "type": "text"
+        })
     
-    output("GREEN", f"{txt_path}已拆分输出为{N}块。名称分别为{output_name}")
+    output("GREEN", f"{txt_path}已拆分输出为{N}块。名称分别为{output_names}")
+    
+    json_obj = {"files": output_json}
+    json_out_path = os.path.join(output_dir, output_json_name)
+    with open(json_out_path, 'w', encoding='utf-8') as jf:
+        json.dump(json_obj, jf, ensure_ascii=False, indent=2)
+    output("GREEN", f"输出配置文件已生成到：{json_out_path}")
+
 
 json_out_agent = ChatAgent(
     system_message="请把输入的json字符串用有逻辑的语言输出，不用添加别的信息",
