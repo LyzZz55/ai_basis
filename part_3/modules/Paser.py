@@ -100,3 +100,52 @@ def contents_calendar_to_list(marketing_plan_text: str)-> dict:
 
 
 
+import re
+def extract_content_between_delimiters(input_str: str, N: int) -> list[str]:
+    """
+    Args:
+        input_str (str): 需要搜索的源字符串。
+        N (int): 一个正整数，定义了分隔符中数字 n 的最大值 (n 从 1 到 N)。
+
+    Returns:
+        list[str]: 一个包含所有匹配到的内容的字符串列表。
+                   如果没有找到任何匹配项，则返回一个空列表。
+    """
+    # 存储所有找到的结果
+    all_matches = []
+    
+    # N 必须是正整数，否则 range(1, N + 1) 会为空，直接返回空列表，符合预期
+    if N < 1:
+        return []
+
+    # 循环遍历数字 n 从 1 到 N
+    for n in range(1, N + 1):
+        # 为当前的 n 构建正则表达式
+        # - f-string 用于将变量 n 插入到字符串中
+        # - -{n}- : 匹配开始的分隔符，例如 '-1-' 或 '-2-'
+        # - (.*?) : 这是一个非贪婪的捕获组。
+        #   - ()   : 定义一个捕获组，这是 re.findall 将会返回的部分。
+        #   - .    : 匹配除换行符外的任何字符。
+        #   - * : 匹配前面的元素零次或多次。
+        #   - ?    : 将 '*' 变为非贪婪模式，意味着它会匹配尽可能短的字符串，
+        #            直到遇到下一个 '-{n}-'。这是防止匹配到多个块的关键。
+        # - -{n}- : 匹配结束的分隔符
+        pattern = f"-{n}-(.*?)-{n}-"
+        
+        # 使用 re.findall 查找所有不重叠的匹配项
+        # re.findall 会返回一个列表，其中只包含捕获组 '()' 中的内容
+        matches = re.findall(pattern, input_str)
+        
+        # 将当前 n 找到的所有匹配项添加到总列表中
+        if matches:
+            all_matches.extend(matches)
+            
+    return all_matches
+
+json_out_agent = ChatAgent(
+    system_message="请把输入的json字符串用有逻辑的语言输出，不用添加别的信息",
+    model=dpskv3_model,
+    message_window_size=1000,
+)
+def JsonToNL(content):
+    return json_out_agent.step(f"{content}")

@@ -109,9 +109,9 @@
 
 3.  **`03_Visual_Communication_And_Execution`**
 
-    - `01_Social_Media_Visual_Identity_System_Guide.pdf` (来自 Agent 3)
-    - `02_AI_Assisted_Visual_Prototypes_Package/` (文件夹，内含图片/短视频文件或链接，来自 Agent 3，按内容条目分类)
-    - `03_Refined_Distribution_And_Engagement_Strategy.docx` (来自 Agent 3)
+    - `01_Social_Media_Visual_Identity_System_Guide.pdf` (来自 **Agent** 3)
+    - `02_AI_Assisted_Visual_Prototypes_Package/` (文件夹，内含图片/短视频文件或链接，来自 **Agent** 3，按内容条目分类)
+    - `03_Refined_Distribution_And_Engagement_Strategy.docx` (来自 **Agent** 3)
 
 4.  **`04_Master_Plan_And_Measurement`**
 

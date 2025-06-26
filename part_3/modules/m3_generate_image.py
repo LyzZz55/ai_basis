@@ -252,10 +252,10 @@ class ImageGenerator:
         """
         根据描述生成图片
         
-        参数:
+        Args:
             content_calendar_entry: 内容日历条目，包含主题、描述等信息
             output_path: 图片保存路径，若为None则不保存
-        返回:
+        Return:
             生成的图片对象，若失败则返回None
         """
         try:
@@ -301,7 +301,7 @@ class ImageGenerator:
                 output("BLACK", "图片生成，Agent判断出人类满意", None, False)
                 break
             else:
-                self.generate_image_from_content(out, True, output_path=output_path+self.iteration)
+                self.generate_image_from_content(out, True, output_path=output_path+self.iteration + ".png")
         
     
     def _process_response(self, response) -> Union[Image.Image, None]:
@@ -334,7 +334,7 @@ def generate_img(vi_system: str, img_requirement: str, output_path: str):
     # 生成内容图片
     content_image = image_gen.generate_image_from_content(
         img_requirement,
-        output_path=output_path
+        output_path=output_path + ".png"
     )
     
     # 展示图片

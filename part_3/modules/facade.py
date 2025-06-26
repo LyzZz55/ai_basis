@@ -5,19 +5,13 @@ from pathlib import Path
 project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
 sys.path.append(project_root)
 # 使用绝对导入
-from part_3.utils import load_file_config, load_files_from_config, output
+from part_3.utils import load_file_config, load_files_from_config, output, save_to_file
 from part_3.modules.m1_evaluate_existing_visual_assets import research_visual_trends
 from part_3.modules.m2_social_VI_system import  m2
 from part_3.modules.m3_generate_image import generate_img, generate_main_visual_for_task_prompt
 from part_3.modules.m4_kpi import kpi_working
-from part_3.modules.Paser import contents_calendar_to_list
-
-
-
-
-
-    
-
+from part_3.modules.Paser import contents_calendar_to_list, JsonToNL
+from part_3.modules.m3_out_stragy import refined_distribution_and_engagement_strategy
 
 
 m1_out = """
@@ -187,7 +181,7 @@ kpi = """
 contents_list = {'tasks': [{'task_name': '7月抖音干细胞科普动画制作', 'task_description': "制作30秒动画《5步看懂干细胞变护肤品》，配'微囊不是魔法，是慢释放小水弹'标语，植入会员注册入口，目标完播率≥65%", 'platform': '抖音', 'time': '7月2日', 'theme': '植物干细胞科普周'}, {'task_name': '7月小红书博士IP直播', 'task_description': '李媛博士IP直播《从实验室到面膜的成分溯源》，现场演示干细胞萃取实验，同步发起#成分透明挑战#，目标UGC周增800篇', 'platform': '小红书', 'time': '7月3日', 'theme': '植物干细胞科普周'}, {'task_name': '8月全平台AR碳足迹视频', 'task_description': '陈雅（环保先锋人设）开箱视频《一片面膜的碳中和之旅》，演示AR扫描包装显示供应链碳足迹，发起#我的碳积分挑战#', 'platform': '全平台', 'time': '8月1日', 'theme': 'AR碳足迹上线周'}, {'task_name': '8月私域碳积分系统上线', 'task_description': '碳积分系统上线（1积分=1g减碳量），会员可兑换生态摄影集，同步提升复购频次至1.7次/90天', 'platform': '私域', 'time': '8月1日', 'theme': 'AR碳足迹上线周'}, {'task_name': '9月抖音新品技术动画', 'task_description': "3秒技术动画《新一代配方3大升级点》+限时折扣，直接拉动'月光面膜'认知度达40%", 'platform': '抖音', 'time': '9月1日', 'theme': '新品首发周'}, {'task_name': '9月小红书配方师直播', 'task_description': '配方师Gigi直播《成分党必看的新品对比测评》，同步开放会员优先购通道，缩短决策周期至2.4周', 'platform': '小红书', 'time': '9月1日', 'theme': '新品首发周'}]}
 
 
-def perform_part_three(need_sace=True):
+def perform_part_three(need_sace=True, parent_out_path='3_out'):
     
     # 读取数据
     json_part_3_input = load_file_config("3_input_files/part_3_in.json") # TODO 不要写死
@@ -195,57 +189,59 @@ def perform_part_three(need_sace=True):
     needed_data_for_agent_three = load_files_from_config(json_part_3_input)
     output("BLACK", f"data for agent3 {needed_data_for_agent_three}", None, False)
 
-    # m1_out = research_visual_trends(
-    #     needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "no brand story now"),
-    #     needed_data_for_agent_three.get("3_input_files/4_industry_trends.txt", "no industry trends now"),
-    # )
-    # logger.info("m1的输出： " + m1_out)
-    # logger.info("QED-----------------------------")
-
+    m1_out = research_visual_trends(
+        needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "no brand story now"),
+        needed_data_for_agent_three.get("3_input_files/4_industry_trends.txt", "no industry trends now"),
+    )
+    output("BLACK", f"m1的输出: {m1_out}", None, False)
+    output("BLACK", "QED-----------------------------", None, False)
     
-    # m2_out = m2(
-    #     needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "Null"),
-    #     needed_data_for_agent_three.get("3_input_files/5_audience_personas.txt", "Null"),
-    #     trend_analyze=m1_out
-    # )
-    # output("BLACK", f"m2的输出: {m2_out}", None, False)
+    m2_out = m2(
+        needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "Null"),
+        needed_data_for_agent_three.get("3_input_files/5_audience_personas.txt", "Null"),
+        trend_analyze=m1_out
+    )
+    output("BLACK", f"m2的输出: {m2_out}", None, False)
+    human_vi = JsonToNL(m2_out)
+    save_to_file(f"{human_vi}", parent_out_path, "Social_Media_Visual_Identity_System_Guide.md")
     
     
-    # # KPI生成
-    # kpi = kpi_working(
-    #     needed_data_for_agent_three.get("3_input_files/7_kpi.txt", "Null"),
-    #     needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "Null"),
-    #     needed_data_for_agent_three.get("3_input_files/6_content_calendar.txt", "Null"),
-    # )
-    # output("BLACK", f"KPI的输出：{kpi} ", None, False)
+    # KPI生成
+    kpi = kpi_working(
+        needed_data_for_agent_three.get("3_input_files/7_kpi.txt", "Null"),
+        needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "Null"),
+        needed_data_for_agent_three.get("3_input_files/6_content_calendar.txt", "Null"),
+    )
+    output("BLACK", f"KPI的输出：{kpi} ", None, False)
+    save_to_file(kpi, parent_out_path, "Comprehensive_KPI_Framework_And_Reporting_Template.md")
+    
+    
     
     # 生成图片，根据内容日历
-    
-    # contents_list = contents_calendar_to_list(
-    #     needed_data_for_agent_three.get("3_input_files/6_content_calendar.txt", "Null"),
-    # )
-    # output("BLACK", f"Info contents_list: {contents_list}", None, False)
+    contents_list = contents_calendar_to_list(
+        needed_data_for_agent_three.get("3_input_files/6_content_calendar.txt", "Null"),
+    )
+    output("BLACK", f"Info contents_list: {contents_list}", None, False)
     
     for single_task in contents_list.get('tasks', []):
         output("BLACK", f"Info single_task: {single_task}", None, False)
       
         # 精细化发布策略
-        # TODO
+        more_kpi_info = refined_distribution_and_engagement_strategy(
+          f"Info single_task: {single_task}",
+          needed_data_for_agent_three.get("3_input_files/4_industry_trends.txt", "no industry trends now"),
+          needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "Null"),
+          needed_data_for_agent_three.get("3_input_files/5_audience_personas.txt", "Null"),
+        )
+        save_to_file(more_kpi_info, parent_out_path, single_task.get('task_name', "tmp_res"), parent_out_path+single_task.get('task_name', "tmp_res") + ".md")
+        
         
         # 主视觉生成
         img_prompt = generate_main_visual_for_task_prompt(single_task, vi_system=m2_out)
         output("BLACK", f"Info 生成图片提示词: {img_prompt}", None, False)
         
-        generate_img(vi_system=m2_out, img_requirement=img_prompt, output_path=single_task.get('task_name', "tmp_res")+ ".png" )
-    
-    
-#  **精细化发布策略与推广触点建议 (Refined Publishing Strategy & Promotion Touchpoint Suggestions):**
-#       - **最佳发布时间窗口：** 结合 Agent 1 的受众分析和各平台特性，给出更精准的每日/每周最佳发布时间窗口建议（可细化到小时）。
-#       - **高级#标签策略：** 除了通用和行业标签，建议品牌专属#标签，以及如何组合使用不同层级（热门、长尾、活动）的#标签矩阵以最大化曝光。
-#       - **互动引导与 UGC 激励细化：** 针对不同内容类型，设计更具体的互动引导文案（如提问、投票、有奖评论）和 UGC 活动细则（如参与方式、评选标准、奖励机制）。
-#       - **KOL/KOC 合作建议（初步）：** 基于 Agent 1 识别的 KOL/KOC 列表和 Agent 2 的内容规划，初步匹配合适的合作人选和合作内容方向（如产品测评、联合直播、内容共创）。
-#       - **付费推广初步建议：** 针对旗舰内容或重点营销活动，建议在哪些平台、针对哪些受众画像、使用何种广告形式（如信息流广告、搜索广告、KOL 商单）进行小范围预算的付费推广测试。
-    
+        generate_img(vi_system=m2_out, img_requirement=img_prompt, output_path=parent_out_path + single_task.get('task_name', "tmp_res")+ "/" + single_task.get('task_name', "tmp_res") )
+        
     
 perform_part_three()
 

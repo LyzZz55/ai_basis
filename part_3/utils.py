@@ -3,10 +3,17 @@ import json
 from camel.loaders import create_file_from_raw_bytes
 from termcolor import colored
 
-def save_to_file(content: str, file_path: str,io_pattern = 'a' , encoding: str = 'utf-8') -> None:
-    """将string保存到指定文件"""
+import os
+
+
+def save_to_file(content: str, *path_parts) -> None:
+    """将字符串保存到指定多层路径文件，自动创建文件夹"""
+    file_path = os.path.join(*path_parts)
+    dir_path = os.path.dirname(file_path)
+    if dir_path and not os.path.exists(dir_path):
+        os.makedirs(dir_path, exist_ok=True)
     try:
-        with open(file_path, io_pattern, encoding=encoding) as file:
+        with open(file_path, 'a', encoding='utf-8') as file:
             file.write(content)
         print(f"内容已追加到文件: {file_path}")
     except Exception as e:
@@ -56,7 +63,7 @@ def load_files_from_config(config: dict) -> dict:
                     "comment": comment,
                     "type": file_type  # 直接使用已获取的 file_type
                 }
-                print("BLACK", f"'{file_path}' read", None, True)
+                # print("BLACK", f"'{file_path}' read", None, True)
                 
             elif file_type == 'img':
                 # 图片处理逻辑
@@ -100,9 +107,6 @@ def load_files_from_config(config: dict) -> dict:
             return {}
             
     return file_contents    
-
-
-
 
 def clean_json_string(json_str: str) -> str:
             """清理JSON字符串，移除markdown代码块标记"""
