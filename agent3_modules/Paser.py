@@ -87,7 +87,7 @@ task_agent = ChatAgent(
     message_window_size=1000,
 )
 
-def contents_calendar_to_list(marketing_plan_text: str)-> dict:
+def contents_calendar_to_list(marketing_plan_text)-> dict:
     # 使用Agent分析营销计划  
     output("BLACK", "Start: 分析营销计划", None, False)
     response = task_agent.step(f"""  
@@ -162,22 +162,23 @@ def process_and_save_delimited_blocks(txt_path: str, N: int, output_dir: str, ou
 
 
 json_out_agent = ChatAgent(
-    system_message="请把输入的json字符串用有逻辑的语言输出，不用添加别的信息",
+    system_message="请简单地把输入的json字符串用有逻辑的语言输出，不用添加别的信息",
     model=dpskv3_model,
     message_window_size=1000,
 )
 def JsonToNL(content):
-    return json_out_agent.step(f"{content}")
+    return json_out_agent.step(f"{content}").msgs[0].content
 
 from typing import Dict, Any
 def deal_data_for_agent_3(needed_data_for_agent_three: Dict):
     res = {}
     for key in needed_data_for_agent_three:
-        if 'kpi' in key:  # 检查key中是否包含字符'A'
-            res["kpi"] = needed_data_for_agent_three[key]
-        elif 'audience' in key:
-            res["audience"] = needed_data_for_agent_three[key]
-        elif 'content_calendar' in key:
-            res["content_calendar"] = needed_data_for_agent_three[key]
-            
+        if 'Brand' in key:  # 检查key中是否包含字符'A'
+            res["Brand_Social_Media_Strategic_Playbook"] = needed_data_for_agent_three[key]
+        elif '_Market' in key:
+            res["Comprehensive_Market_And_Competitor_Intelligence_Report"] = needed_data_for_agent_three[key]
+        elif 'Idea' in key:
+            res["Content_Idea_Repository"] = needed_data_for_agent_three[key]
+        elif 'Audience' in key:
+            res["Detailed_Target_Audience_Persona_Portfolio"] = needed_data_for_agent_three[key]
     return res

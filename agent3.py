@@ -14,228 +14,205 @@ from agent3_modules.m4_kpi import kpi_working
 from agent3_modules.Paser import contents_calendar_to_list, JsonToNL, deal_data_for_agent_3
 from agent3_modules.m3_out_stragy import refined_distribution_and_engagement_strategy
 
+m1_out = '''
+根据提供的品牌战略手册，该品牌的定位为“植物学家闺蜜”，结合科技感、治愈感和环保理念，社交媒体视觉设计趋势应围绕这些核心元素展开。以下是针对当前流行的视觉设计元素、色彩搭配趋势以及排版和布局风格的分析：
+
+---
+
+### **1. 当前流行的视觉设计元素**
+- **AR交互元素**：  
+  品牌强调“AR扫码溯源植物干细胞”，因此设计中可以融入AR交互的视觉提示，如动态二维码、3D植物生长动画或科技感线条。
+  
+- **自然与科技的结合**：  
+  使用植物插画与科技元素（如分子结构、数据可视化）结合，展现“植物学家闺蜜”的双重身份。例如，北极云莓的插画与微囊化科技示意图的结合。
+
+- **UGC内容展示**：  
+  小红书和抖音平台强调UGC，设计中可以加入真实用户的使用场景（如阳台植物实验室），采用拼贴或蒙太奇风格展示用户生成内容。
+
+- **环保视觉符号**：  
+  空瓶改造手工课、减碳20%等环保主题需要用视觉符号强化，如再生循环标志、碳足迹图表或自然材质纹理（如木纹、麻布）。
+
+- **磁吸面膜设计展示**：  
+  通过动态或静态的视觉展示磁吸面膜的使用过程，突出单手操作的便捷性和仪式感。
+
+---
+
+### **2. 色彩搭配趋势**
+- **主色调**：  
+  - **冷色调为主**：如月光蓝、冰川白、北极云莓的淡紫色，体现科技感和治愈感。  
+  - **自然色调为辅**：如苔藓绿、木质棕，强调植物成分和环保理念。
+
+- **流行趋势**：  
+  - **渐变透明色**：模拟极光或月光效果，增加科技感和梦幻感。  
+  - **低饱和度色彩**：符合“睡前修复仪式”的舒缓氛围，避免过于刺眼的颜色。  
+  - **对比色点缀**：如深蓝色与金色的搭配（金色象征科技感），提升视觉冲击力。
+
+---
+
+### **3. 排版和布局风格**
+- **科技感排版**：  
+  - **不对称网格**：打破传统对称布局，体现科技品牌的创新感。  
+  - **数据可视化**：将成分溯源、减碳数据等以图表或信息图形式呈现。  
+  - **极简留白**：突出核心信息，减少视觉干扰。
+
+- **治愈感排版**：  
+  - **柔和曲线**：使用圆角边框或波浪形分割线，体现“阳台治愈师”的温暖。  
+  - **场景化布局**：如将夜间护肤场景与产品功能结合，营造沉浸式体验。
+
+- **平台适配**：  
+  - **小红书**：以图文为主，采用高信息密度的拼贴式排版，适合展示UGC和成分分析。  
+  - **抖音**：动态视觉为主，使用快速切换的镜头和字幕强调“通勤急救”或“ASMR仪式”。  
+  - **微信**：长图文或H5设计，适合深度服务内容（如碳积分教程）的层次化展示。
+
+---
+
+### **总结**
+品牌的社交媒体视觉设计应围绕“科技+自然+治愈”的核心定位，结合当前流行的AR交互、渐变色彩、不对称布局等趋势，同时根据不同平台的特性调整设计风格。例如：
+- **小红书**：拼贴式UGC展示+成分数据可视化。  
+- **抖音**：动态科技感+场景化治愈内容。  
+- **微信**：极简留白+深度服务信息图。  
+
+如果需要更具体的案例或参考，可以进一步搜索相关设计趋势或竞品分析。
+'''
+
+m2_out = '''
+{'brandVisualIdentitySystem': {'coreDesignConcept': {'description': "融合'植物干细胞科技'的专业性与'月光疗愈'的感性主张，构建兼具实验室精确度与自然疗愈感的品牌识别系统", 'targetAudience': ['成分党理性需求', '环保者情感诉求']}, 'coreVisualElements': {'logoSystem': {'mainLogo': {'description': '双螺旋DNA与北极云莓叶的几何融合，隐藏新月负空间', 'dynamicVersion': {'ARTrigger': '干细胞分裂动画'}}, 'typography': {'fontType': '定制圆角+锐利切割无衬线字体', 'specialCharacter': "'i'字母点替换为分子图标"}}, 'colorSystem': {'techLayer': ['极光蓝(#E6F2FF)', '碳素黑(#1A1A1A)'], 'healingLayer': ['云莓紫(#D8C4F7)', '极地冰蓝(PMS 14-4105TCX)'], 'ecoLayer': ['苔原绿(#5B8C7A)', '苔藓绿(PMS 16-5938TCX)'], 'specialEffects': '月光渐变（蓝→紫→白）应用于动效设计'}, 'dynamicIdentity': {'ARAnimations': ['植物生长动画（含实时碳数据）', '成分可视化粒子动画（如98个光点表98%天然成分）', '磁吸操作动态演示']}}, 'crossPlatformAdaptation': {'platforms': [{'name': '小红书', 'strategy': '实验室笔记风', 'keyElements': ['成分对比卡', '专利文献可视化']}, {'name': '抖音', 'strategy': '科技极光滤镜', 'keyElements': ['磁吸教程GIF', '粒子吸附特效']}, {'name': '微信', 'strategy': '碳积分游戏化', 'keyElements': ['可生长虚拟植物', 'H5交互进度条']}]}, 'ecoInnovationDesign': {'packagingSystem': ['藻类变色油墨（响应光照）', '可拆卸瓶盖DIY盆栽'], 'unboxingExperience': ['月光磁吸盒', '麻纤维内衬', '可种植种子纸'], 'visualSymbols': ['碳足迹循环路径', '显微摄影纹理库']}, 'executionValidation': {'technicalTests': ['眼动仪验证信息布局效率', '色觉障碍用户渐变辨识度测试'], 'experienceMetrics': {'techSenseNPS': '≥7.5', 'ecoLogoRecognitionRate': '≥90%'}}, 'implementationPlan': {'phases': ['优先落地基础系统（核心色+细胞纹理）', '分阶段开发AR组件与平台专属视觉包', '保持微胶囊破裂动画的跨平台一致性'], 'note': '所有设计预留15%空白适配区，确保多媒介兼容性'}}}
+'''
+
+human_m2_out = '''
+品牌视觉识别系统的核心设计理念融合了"植物干细胞科技"的专业性与"月光疗愈"的感性主张，旨在构建兼具实验室精确度与自然疗愈感的系统，目标受众包括成分党理性需求和环保者情感诉求。核心视觉元素包括：logo系统的主logo为双螺旋DNA与北极云莓叶的几何融合，隐藏新月负空间，动态版本通过AR触发干细胞分裂动画；字体排版使用定制圆角+锐利切割无衬线字体，其中"i"字母点替换为分子图标；色彩系统分为技术层（如极光蓝#E6F2FF、碳素黑#1A1A1A）、疗愈层（如云莓紫#D8C4F7、极地冰蓝PMS 14-4105TCX）和生态层（如苔原绿#5B8C7A、苔藓绿PMS 16-5938TCX），特殊效果为月光渐变（蓝→紫→白）应用于动效设计；动态识别包括AR动画如植物生长动画（含实时碳数据）、成分可视化粒子动画（如98个光点表98%天然成分）和磁吸操作动态演示。跨平台适配针对小红书采用实验室笔记风策略，关键元素为成分对比卡和专利文献可视化；抖音采用科技极光滤镜策略，关键元素为磁吸教程GIF和粒子吸附特效；微信采用碳积分游戏化策略，关键元素为可生长虚拟植物和H5交互进度条。生态创新设计包括包装系统如藻类变色油墨（响应光照）和可拆卸瓶盖DIY盆栽；开箱体验如月光磁吸盒、麻纤维内衬和可种植种子纸；视觉符号如碳足迹循环路径和显微摄影纹理库。执行验证包括技术测试如眼动仪验证信息布局效率和色觉障碍用户渐变辨识度测试；体验指标要求技术感NPS≥7.5和生态logo识别率≥90%。实施计划分为阶段：优先落地基础系统（核心色+细胞纹理）、分阶段开发AR组件与平台专属视觉包、保持微胶囊破裂动画的跨平台一致性，所有设计预留15%空白适配区确保多媒介兼容性。
+'''
+
+kpi_out = '''
+
+### **KPI扩展表格**
+
+#### **小红书**
+| **KPI类型**       | **核心KPI**                        | **次核心KPI**                  | **诊断性KPI**                  | **测量方法**                                                                 | **优化建议**                                                                 |
+|-------------------|-----------------------------------|--------------------------------|--------------------------------|------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| **认知层**        | 成分溯源直播观看量                | AR互动率                      | 品牌搜索量增长                | 直播观看量统计；AR扫码次数；品牌关键词搜索量监测                              | 提升直播预告频次；优化AR内容互动性                                          |
+| **互动层**        | UGC测评合集互动率（点赞+评论）     | 挑战赛参与人数                | UGC衍生率（KOL:UGC）          | 互动率=（点赞+评论）/观看量；挑战赛参与人数统计；KOL与UGC比例计算             | 设置UGC奖励机制；KOL合作优化                                                |
+| **引导层**        | 点击率 (CTR)                      | 落地页访问量                  | 表单提交数                    | CTR=点击量/曝光量；落地页访问量统计；表单提交数监测                           | 优化文案和视觉；提升落地页加载速度                                          |
+| **品牌健康度**    | 粉丝增长数                        | 品牌声量情感正负比            | 净推荐值 (NPS)                | 粉丝增长数统计；情感分析工具；NPS问卷调查                                    | 加强粉丝互动；负面声量及时回应                                              |
+
+#### **抖音**
+| **KPI类型**       | **核心KPI**                        | **次核心KPI**                  | **诊断性KPI**                  | **测量方法**                                                                 | **优化建议**                                                                 |
+|-------------------|-----------------------------------|--------------------------------|--------------------------------|------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| **认知层**        | #月光疗愈时刻话题播放量           | 通勤急救术视频完播率          | 品牌搜索量增长                | 话题播放量统计；完播率=完整观看量/总观看量；品牌关键词搜索量监测              | 优化话题标签；提升视频前5秒吸引力                                           |
+| **互动层**        | ASMR仪式视频分享率                | 挑战赛参与人数                | 互动率（点赞+评论）           | 分享率=分享量/观看量；挑战赛参与人数统计；互动率=（点赞+评论）/观看量         | 提升ASMR内容沉浸感；设置挑战赛奖励                                          |
+| **引导层**        | 点击率 (CTR)                      | App下载量                     | 表单提交数                    | CTR=点击量/曝光量；App下载量统计；表单提交数监测                              | 优化信息流广告；简化下载流程                                                |
+| **转化层**        | 订单量                            | 销售额                        | ROI                            | 订单量统计；销售额监测；ROI=收入/成本                                        | 优化下单流程；提升产品页面吸引力                                            |
+
+#### **微信**
+| **KPI类型**       | **核心KPI**                        | **次核心KPI**                  | **诊断性KPI**                  | **测量方法**                                                                 | **优化建议**                                                                 |
+|-------------------|-----------------------------------|--------------------------------|--------------------------------|------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| **认知层**        | 碳积分教程阅读量                  | 过敏急速响应通道使用率        | 品牌搜索量增长                | 阅读量统计；使用率=使用人数/总会员数；品牌关键词搜索量监测                    | 优化教程内容；提升响应速度                                                  |
+| **互动层**        | 会员互动率（评论+私信）           | UGC产出数量                   | 互动率（点赞+评论）           | 互动率=（评论+私信）/会员数；UGC数量统计；互动率=（点赞+评论）/阅读量         | 设置会员专属活动；激励UGC产出                                               |
+| **引导层**        | 碳积分激活率                      | 表单提交数                    | App下载量                     | 激活率=激活人数/总会员数；表单提交数监测；App下载量统计                       | 简化激活流程；优化表单设计                                                  |
+| **转化层**        | 会员复购率                        | 销售额                        | ROI                            | 复购率=复购人数/总会员数；销售额监测；ROI=收入/成本                          | 提升会员专属优惠；优化复购提醒                                              |
+
+---
+
+### **数据分析维度与报告频率**
+1. **按内容主题**：
+   - 分析不同主题内容的KPI表现（如科技看得见 vs. 仪式治愈力）。
+   - 报告频率：月报。
+2. **按Persona**：
+   - 分析目标人群的KPI差异（如科技理性派成分党 vs. 环保仪式感追求者）。
+   - 报告频率：季报。
+3. **按发布时段**：
+   - 分析不同时段的内容表现（如工作日 vs. 周末）。
+   - 报告频率：周报。
+
+---
+
+### **具体KPI分析**
+1. **UGC衍生率（小红书）**：
+   - **计算公式**：UGC衍生率 = UGC数量 / KOL发布数量。
+   - **优化建议**：通过挑战赛和奖励机制激励用户生成内容。
+2. **通勤急救术视频完播率（抖音）**：
+   - **计算公式**：完播率 = 完整观看量 / 总观看量。
+   - **优化建议**：缩短视频时长，提升前5秒吸引力。
+3. **碳积分激活率（微信）**：
+   - **计算公式**：激活率 = 激活人数 / 总会员数。
+   - **优化建议**：简化激活流程，设置积分奖励。
+'''
+
+contents_list = {'tasks': [{'task_name': '月光实验室直播夜', 'task_description': '进行AR直播展示云莓干细胞分裂过程，并包括专家答疑环节。使用小红书直播平台，并创建切片短视频用于传播。', 'time': '1月'}, {'task_name': '#阳台治愈计划', 'task_description': '发起UGC挑战赛鼓励用户晒出自建植物角和月光面膜使用场景，并提供DIY教程指导用户参与。', 'time': '2月'}, {'task_name': '碳足迹可视化面膜', 'task_description': '开发限量版面膜产品，每片包装印上实时减碳数据，并制作开箱视频展示产品特点和环保价值。', 'time': '3月'}, {'task_name': '通勤急救术', 'task_description': '创建磁吸面膜单手操作教程视频，结合场景化测评内容。使用抖音竖屏视频格式，并投放信息流广告推广。', 'time': '4月'}, {'task_name': '成分陪审团', 'task_description': '邀请用户通过私域社群参与新品成分测试活动，并生成署名实验报告分享测试结果和反馈。', 'time': '5月'}, {'task_name': '空瓶改造大师课', 'task_description': '联合艺术家举办线下工作坊和直播课，教导用户如何将空瓶改造为家居艺术品，强调环保再利用。', 'time': '6月'}, {'task_name': '月光疗愈明信片', 'task_description': '制作实体赠品明信片，鼓励用户生成治愈语录，并整合AR植物动画。通过社交媒体互动推广用户参与。', 'time': '7月'}, {'task_name': '植物学家日记', 'task_description': '拍摄原料种植地溯源纪录片，内容涵盖植物生长过程。发布在B站中视频平台，并创建知乎专栏文章补充细节。', 'time': '8月'}, {'task_name': '会员碳积分计划', 'task_description': '实施空瓶回收系统，用户可兑换碳积分换购产品。通过微信小程序管理积分，并发送推送通知提醒用户参与。', 'time': '9月'}, {'task_name': '熬夜肌值夜班', 'task_description': '开发睡前护理ASMR内容，并与睡眠监测APP合作联动。发起抖音挑战赛推广夜间护肤routine。', 'time': '10月'}]}
+
+img_prompt = "9:16 vertical composition, moonlight laboratory scene with AR interface overlay. Night sky gradient (#E6F2FF to #D8C4F7 to white) background, glowing double helix DNA structure integrated with Arctic cloudberry leaves. Central holographic display showing real-time 3D animation of glowing cloudberry stem cell division (#5B8C7A particles with #D8C4F7 energy trails). Lab notebook aesthetic with minimal ingredient comparison cards floating mid-air, clean sans-serif typography (molecular dot on 'i'). Subtle carbon data streams (#1A1A1A) flowing through petri dish containers. Northern lights particle effects (PMS 14-4105TCX) interacting with magnetic UI elements. Soft focus on scientist silhouette conducting AR demonstration. --ar 9:16 --style raw"
+img_prompt = "a cute kid"
+
 def perform_part_three(part_3_input_config='part3_in/in.json', parent_out_path='outputs'):
     # 读取数据
     json_part_3_input = load_file_config(part_3_input_config)
-    output("GREY","input config: {json_part_3_input}")
+    # output("GREY","input config: {json_part_3_input}")
     needed_data_for_agent_three = load_files_from_config(json_part_3_input)
-    output("GREY", f"data for agent3 {needed_data_for_agent_three}")
+    # output("GREY", f"{needed_data_for_agent_three}\n\n\n")
 
     dealed_data_for_agent_3 = deal_data_for_agent_3(needed_data_for_agent_three)
+    # output("GREY", f"{dealed_data_for_agent_3}")
     
-    m1_out = research_visual_trends(
-        needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "no brand story now"),
-        needed_data_for_agent_three.get("3_input_files/4_industry_trends.txt", "no industry trends now"),
-    )
-    output("BLACK", f"m1的输出: \n{m1_out}")
-    output("GREY", "QED -----------------------------")
+    # output("GREY", "m1 start")
+    # m1_out = research_visual_trends(
+    #     dealed_data_for_agent_3.get("Brand_Social_Media_Strategic_Playbook", "no info here"),
+    # )
+    # output("BLACK", f"m1的输出: \n{m1_out}")
+    # output("GREY", "QED m1 -----------------------------")
     
-    m2_out = m2(
-        needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "Null"),
-        needed_data_for_agent_three.get("3_input_files/5_audience_personas.txt", "Null"),
-        trend_analyze=m1_out
-    )
-    output("BLACK", f"m2的输出: {m2_out}")
-    human_vi = JsonToNL(m2_out)
-    save_to_file(f"{human_vi}", parent_out_path, "Social_Media_Visual_Identity_System_Guide.md")
-    
-    # KPI生成
-    kpi = kpi_working(
-        needed_data_for_agent_three.get("3_input_files/7_kpi.txt", "Null"),
-        needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "Null"),
-        needed_data_for_agent_three.get("3_input_files/6_content_calendar.txt", "Null"),
-    )
-    output("BLACK", f"KPI的输出：{kpi} ")
-    save_to_file(kpi, parent_out_path, "Comprehensive_KPI_Framework_And_Reporting_Template.md")
+    # output("GREY", "m2 start")
+    # m2_out = m2(
+    #     brand_info=dealed_data_for_agent_3.get("Brand_Social_Media_Strategic_Playbook", "no info here"),
+    #     target_audience=dealed_data_for_agent_3.get("Detailed_Target_Audience_Persona_Portfolio", "no info here"),
+    #     _trend_analyze=m1_out
+    # )
+    # output("BLACK", f"m2的输出: {m2_out}")
+    # output("GREY", "human_m2 start")
+    # human_vi = JsonToNL(m2_out)
+    # save_to_file(f"{human_vi}", parent_out_path, "Social_Media_Visual_Identity_System_Guide.md")
+    # output("BLACK", f"{human_vi}")
+    # output("GREY", "human_m2 end")
     
     
+    # # KPI生成
+    # output("GREY", "kpi start")
+    # kpi = kpi_working(
+    #     brand_and_simple_kpi=dealed_data_for_agent_3.get("Brand_Social_Media_Strategic_Playbook", "no info here"),
+    #     content_calendar=dealed_data_for_agent_3.get("Content_Idea_Repository", "no info here"),
+    # )
+    # output("BLACK", f"KPI的输出：{kpi} ")
+    # save_to_file(kpi, parent_out_path, "Comprehensive_KPI_Framework_And_Reporting_Template.md")
+    # output("GREY", "kpi end")
     
-    # 生成图片，根据内容日历
-    contents_list = contents_calendar_to_list(
-        needed_data_for_agent_three.get("3_input_files/6_content_calendar.txt", "Null"),
-    )
-    output("BLACK", f"Info contents_list: {contents_list}")
     
+    
+    # # 生成图片，根据内容日历
+    # output("GREY", "contents_calendar_to_list start")
+    # contents_list = contents_calendar_to_list(
+    #     dealed_data_for_agent_3.get("Content_Idea_Repository", "no info here"),
+    # )
+    # output("BLACK", f"Info contents_list: {contents_list}")
+    # output("GREY", "contents_calendar_to_list end")
     for single_task in contents_list.get('tasks', []):
         output("BLACK", f"Info single_task: {single_task}")
       
-        # 精细化发布策略
-        more_kpi_info = refined_distribution_and_engagement_strategy(
-          f"Info single_task: {single_task}",
-          needed_data_for_agent_three.get("3_input_files/4_industry_trends.txt", "no industry trends now"),
-          needed_data_for_agent_three.get("3_input_files/2_brand_story.txt", "Null"),
-          needed_data_for_agent_three.get("3_input_files/5_audience_personas.txt", "Null"),
-        )
-        save_to_file(more_kpi_info, parent_out_path, single_task.get('task_name', "tmp_res"), parent_out_path+single_task.get('task_name', "tmp_res") + ".md")
-        
+        ## 精细化发布策略
+        # output("GREY", "精细化发布策略 start")
+        # more_out_info = refined_distribution_and_engagement_strategy(
+        #     task=f"Info single_task: {single_task}",
+        #     trend_info=m1_out,
+        #     brand_story=dealed_data_for_agent_3.get("Brand_Social_Media_Strategic_Playbook", "no info here"),
+        #     audience_info=dealed_data_for_agent_3.get("Detailed_Target_Audience_Persona_Portfolio", "no info here")
+        # )
+        # save_to_file(f"{more_out_info}", parent_out_path, single_task.get('task_name', "tmp_res"), parent_out_path+single_task.get('task_name', "tmp_res") + ".md")
+        # output("GREY", "精细化发布策略 end")
         
         # 主视觉生成
-        img_prompt = generate_main_visual_for_task_prompt(single_task, vi_system=m2_out)
-        output("BLACK", f"Info 生成图片提示词: {img_prompt}")
-        
+        output("GREY", "img start")
+        # img_prompt = generate_main_visual_for_task_prompt(single_task, vi_system=m2_out)
+        # output("BLACK", f"Info 生成图片提示词: {img_prompt}")
         generate_img(vi_system=m2_out, img_requirement=img_prompt, output_path=parent_out_path + single_task.get('task_name', "tmp_res")+ "/" + single_task.get('task_name', "tmp_res") )
         
-# m1_out = """
-# ### **1. 当前流行的视觉设计元素**
-# #### **趋势分析**
-# - **自然与科技结合**：  
-#   行业趋势显示，技术民主化和环保实证主义是核心方向。设计上需体现“自然与科技”的融合，例如：
-#   - **植物干细胞可视化**：用微距摄影或3D动画展示植物干细胞，结合生活化比喻（如“缓释小水弹”）。
-#   - **AR/VR元素**：AR碳足迹追踪功能可设计为动态图标或交互式视觉标签（如扫描包装后显示动态供应链路线）。
-
-# - **极简主义与有机感**：  
-#   天然有机护肤品行业偏向极简设计，但需加入有机纹理（如叶脉、水滴）增强亲和力。
-
-# #### **品牌应用**
-# - **动态内容**：  
-#   - 抖音：3秒技术动画（如“从实验室到肌肤”的极简流程）。
-#   - 小红书：成分溯源直播的背景设计可加入动态植物生长效果。
-# - **UGC激励**：  
-#   鼓励用户分享带有品牌标志性元素（如绿叶图标、碳足迹标签）的创意内容。
-
-# ---
-
-# ### **2. 色彩搭配趋势**
-# #### **趋势分析**
-# - **自然色系主导**：  
-#   - **核心色**：柔和的绿色（象征自然）、大地色（如米白、浅棕）和低饱和度蓝色（象征科技与纯净）。
-#   - **点缀色**：亮绿色或金色（用于突出技术感和高级感）。
-
-# - **环保主题色**：  
-#   行业趋势显示碳足迹可视化是重点，可加入“碳中性灰”或“生态蓝”作为辅助色。
-
-# #### **品牌应用**
-# - **平台差异化**：  
-#   - **抖音**：高对比度色彩（如亮绿+白）吸引眼球。
-#   - **小红书**：柔和的自然色系（如薄荷绿+米白）增强信任感。
-#   - **Instagram**：使用统一的滤镜（如低饱和度+自然光）保持品牌一致性。
-
-# ---
-
-# ### **3. 排版和布局风格**
-# #### **趋势分析**
-# - **不对称与留白**：  
-#   现代设计偏向非对称布局，搭配大量留白以突出核心信息（如成分透明化、碳足迹数据）。
-
-# - **模块化设计**：  
-#   适合跨平台叙事（如抖音→小红书→私域），将内容拆分为可复用的模块（如技术卡片、用户见证板块）。
-
-# #### **品牌应用**
-# - **信息分层**：  
-#   - **屋顶标语**：大字号居中排版，搭配极简背景（如纯色或微距植物纹理）。
-#   - **三大支柱**：用图标+短文案的卡片式设计，便于用户快速理解。
-# - **平台适配**：  
-#   - **抖音**：单屏聚焦（如左图右文，或全屏动画）。
-#   - **小红书**：长图文结合，突出UGC内容（如用户测评的网格布局）。
-
-# ---
-
-# ### **总结建议**
-# 1. **视觉元素**：结合动态科技感与自然纹理，强化AR/VR互动设计。
-# 2. **色彩**：以自然色系为主，平台差异化调整饱和度。
-# 3. **排版**：模块化+留白，适配各平台内容需求（如抖音快闪 vs. 小红书深度）。
-# """
-
-# m2_out=\
-# {'brandName': 'EcoGarden', 'brandSlogan': None, 'coreValues': ['科技自然', '透明可信', '简约高效'], 'coreElements': ['植物干细胞', '可持续发展'], 'logo': {'description': '抽象化的植物叶脉或细胞结构与几何线条或科技元素相结合，简洁现代', 'mainColor': '#a7d1ab', 'secondaryColors': ['#f5f5dc', '#d3d3d3', '#808080', '亮绿色', '金色'], 'font': {'primary': '现代感强、易读性高的无衬线字体', 'secondary': '衬线字体'}, 'variations': ['不同尺寸', '不同版本', '动画版本']}, 'colorPalette': {'mainColor': '#a7d1ab', 'secondaryColors': ['#f5f5dc', '#d3d3d3', '#808080'], 'accentColors': ['亮绿色', '金色'], 'platformAdjustment': '根据平台差异，适度调整色彩饱和度和亮度'}, 'layoutSystem': {'designPrinciple': '模块化设计，例如成分卡片、技术卡片、环保数据卡片等', 'whitespace': '充分利用留白，清晰划分信息层级，确保易读性和视觉舒适度'}, 'platformStrategies': {'Douyin': '强调动感和视觉冲击', 'Xiaohongshu': '注重生活化和用户生成内容', 'Instagram': '保持高度视觉一致性'}, 'ARVRApplications': {'AR': '产品成分溯源和碳足迹追踪的可视化', 'VR': '微距摄影或3D动画展现植物干细胞的科技感'}, 'userExperience': {'principles': ['易用性', '一致性', '可访问性'], 'testing': '建议进行用户测试以确保设计方案的有效性'}, 'iteration': '持续关注市场趋势，并根据用户反馈不断迭代优化VI系统，确保其长期有效性'}
-
-# kpi = """
-
-# ### **EcoGarden有机护肤KPI细化框架**
-
-# #### **1. 抖音平台**
-# | **营销目标**          | **核心KPI**       | **次核心KPI**       | **诊断性KPI**       | **目标值**       |
-# |-----------------------|------------------|---------------------|---------------------|-----------------|
-# | 月光面膜认知度40%     | 视频完播率       | 曝光量              | 3秒播放率           | ≥65%            |
-# | 会员注册转化          | CTR (点击率)     | 落地页访问量        | 跳出率              | 7.2%            |
-# | 新品引爆效果          | 分享率           | 评论互动率          | 粉丝增长数          | ≥5%             |
-
-# **分析维度**：
-# - 按内容主题：技术动画 vs. 会员钩子
-# - 按发布时段：工作日 vs. 周末
-# - 按用户画像：新用户 vs. 老用户  
-# **报告频率**：周报
-
-# ---
-
-# #### **2. 小红书平台**
-# | **营销目标**          | **核心KPI**       | **次核心KPI**       | **诊断性KPI**       | **目标值**       |
-# |-----------------------|------------------|---------------------|---------------------|-----------------|
-# | UGC 10,000+           | UGC投稿量/周     | 互动率              | UGC质量评分         | 800篇           |
-# | 信任基建效果          | 直播观看时长     | 直播互动率          | 品牌搜索量增长      | ≥15分钟         |
-# | 环保挑战参与度        | 挑战话题参与量   | 分享率              | 情感正负比          | ≥1,000次        |
-
-# **分析维度**：
-# - 按内容主题：成分溯源 vs. 环保挑战
-# - 按用户行为：直播观众 vs. 话题参与者  
-# **报告频率**：周报
-
-# ---
-
-# #### **3. 全域平台**
-# | **营销目标**          | **核心KPI**       | **次核心KPI**       | **诊断性KPI**       | **目标值**       |
-# |-----------------------|------------------|---------------------|---------------------|-----------------|
-# | 新增会员5,000人       | 会员转化率       | 注册表单提交数      | 渠道来源分布        | 7.2%            |
-# | 跨平台ROI≥1:2.5       | ROI              | 客单价              | 用户旅程路径分析    | 1:2.5           |
-# | 品牌健康度            | NPS (净推荐值)   | 粉丝增长数          | 品牌声量情感正负比  | ≥40             |
-
-# **分析维度**：
-# - 按渠道：抖音 vs. 小红书 vs. 私域
-# - 按用户生命周期：新用户 vs. 复购用户  
-# **报告频率**：月报
-
-# ---
-
-# #### **4. 私域平台**
-# | **营销目标**          | **核心KPI**       | **次核心KPI**       | **诊断性KPI**       | **目标值**       |
-# |-----------------------|------------------|---------------------|---------------------|-----------------|
-# | 会员复购率35%         | 90天复购频次     | 复购客单价          | 会员活跃度          | ≥2.1次          |
-# | 碳积分系统效果        | 积分兑换率       | 会员留存率          | 碳足迹追踪参与度    | ≥30%            |
-# | 品牌忠诚度            | 私域互动率       | 社群活跃度          | UGC产出量           | ≥10%            |
-
-# **分析维度**：
-# - 按会员等级：普通会员 vs. 高级会员
-# - 按活动类型：碳积分 vs. 新品首发  
-# **报告频率**：月报
-
-# ---
-
-# ### **详细KPI分析**
-
-# #### **1. 视频完播率（抖音）**
-# - **测量方法**：播放完成次数 / 播放总次数
-# - **计算公式**：完播率 = (播放完成数 ÷ 播放总数) × 100%
-# - **优化建议**：
-#   - 调整视频前3秒吸引用户注意力。
-#   - 测试不同视频长度（如15秒 vs. 30秒）。
-
-# #### **2. UGC投稿量（小红书）**
-# - **测量方法**：统计每周新增UGC帖子的数量。
-# - **计算公式**：UGC投稿量 = 每周新增帖子数
-# - **优化建议**：
-#   - 提供UGC激励计划（如抽奖、曝光机会）。
-#   - 优化话题标签设计，提高用户参与意愿。
-
-# #### **3. 会员复购频次（私域）**
-# - **测量方法**：统计会员在90天内购买的次数。
-# - **计算公式**：复购频次 = 总复购次数 ÷ 会员总数
-# - **优化建议**：
-#   - 定期推送个性化优惠。
-#   - 设计会员专属活动（如新品优先购）。
-
-# #### **4. 跨平台ROI**
-# - **测量方法**：总收入 ÷ 总广告支出
-# - **计算公式**：ROI = (收入 ÷ 成本) × 100%
-# - **优化建议**：
-#   - 优化用户旅程路径（如抖音引流 → 小红书验真 → 私域复购）。
-#   - 分析高ROI渠道，增加投放预算。
-
-# ---
-
-# ### **KPI关联性分析**
-# - **认知层 → 互动层**：高完播率（抖音）可能带动UGC投稿量（小红书）。
-# - **互动层 → 转化层**：UGC质量评分（小红书）可能影响会员转化率（全域）。
-# - **转化层 → 品牌健康度**：高复购频次（私域）可能提升NPS（全域）。
-# """
-
-# contents_list = {'tasks': [{'task_name': '7月抖音干细胞科普动画制作', 'task_description': "制作30秒动画《5步看懂干细胞变护肤品》，配'微囊不是魔法，是慢释放小水弹'标语，植入会员注册入口，目标完播率≥65%", 'platform': '抖音', 'time': '7月2日', 'theme': '植物干细胞科普周'}, {'task_name': '7月小红书博士IP直播', 'task_description': '李媛博士IP直播《从实验室到面膜的成分溯源》，现场演示干细胞萃取实验，同步发起#成分透明挑战#，目标UGC周增800篇', 'platform': '小红书', 'time': '7月3日', 'theme': '植物干细胞科普周'}, {'task_name': '8月全平台AR碳足迹视频', 'task_description': '陈雅（环保先锋人设）开箱视频《一片面膜的碳中和之旅》，演示AR扫描包装显示供应链碳足迹，发起#我的碳积分挑战#', 'platform': '全平台', 'time': '8月1日', 'theme': 'AR碳足迹上线周'}, {'task_name': '8月私域碳积分系统上线', 'task_description': '碳积分系统上线（1积分=1g减碳量），会员可兑换生态摄影集，同步提升复购频次至1.7次/90天', 'platform': '私域', 'time': '8月1日', 'theme': 'AR碳足迹上线周'}, {'task_name': '9月抖音新品技术动画', 'task_description': "3秒技术动画《新一代配方3大升级点》+限时折扣，直接拉动'月光面膜'认知度达40%", 'platform': '抖音', 'time': '9月1日', 'theme': '新品首发周'}, {'task_name': '9月小红书配方师直播', 'task_description': '配方师Gigi直播《成分党必看的新品对比测评》，同步开放会员优先购通道，缩短决策周期至2.4周', 'platform': '小红书', 'time': '9月1日', 'theme': '新品首发周'}]}
+        output("GREY", "img end")
+        
+        

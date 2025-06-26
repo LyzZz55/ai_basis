@@ -3,20 +3,18 @@
 
 import json
 from typing import Dict, Any
+from termcolor import colored
 
 
-
-def output(color: str, message: str, f=None, std_flag=None):
-    """一个简单的打印函数，用于模拟给定的 output 函数。"""
-    color_map = {
-        "GREEN": "\033[92m",
-        "RED": "\033[91m",
-        "END": "\033[0m",
-    }
-    start_color = color_map.get(color, "")
-    end_color = color_map.get("END", "")
-    print(f"{start_color}{message}{end_color}")
-
+def output(color,message,f=None,std_flag=1):
+    if std_flag:
+        print(colored(message,color.lower()))
+    if f is not None:
+        f.write("--------"+color+"--------\n"
+            +message
+            +"\n"
+        )
+    return
 
 def load_file_config(json_path: str) -> Dict[str, Any]:
     """从 JSON 文件加载文件配置"""
@@ -107,3 +105,10 @@ def save_to_file(content: str, *path_parts) -> None:
         print(f"写入文件时出错: {e}")
 
 
+def clean_json_string(s):
+    s = s.strip()
+    if s.startswith("```json"):
+        s = s[len("```json"):].lstrip()
+    if s.endswith("```"):
+        s = s[:-3].rstrip()
+    return s

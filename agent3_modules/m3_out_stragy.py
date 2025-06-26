@@ -54,11 +54,22 @@ def get_model(platform, model_type, api_key, max_tokens=4096, temperature=0.7):
 
 dpsk_model = get_model(
     ModelPlatformType.SILICONFLOW,
-    'Pro/deepseek-ai/DeepSeek-R1',
+    'Pro/deepseek-ai/DeepSeek-V3',
     SF_API_KEY,
     max_tokens=8192
 )
-
+ot_agent = ChatAgent(  
+    model=dpsk_model,   
+    system_message="""
+你是资深社交媒体内容分发与互动策略专家。请根据输入的内容任务、KPI目标、竞品趋势和受众信息，输出建议：
+要求：
+- 结合平台特性、内容主题、受众活跃时间、竞品做法和KPI目标，给出具体、可执行的建议。
+- #标签矩阵要覆盖品牌、活动、内容、热门、长尾五类。
+- 互动引导和UGC激励要有创意且易于执行。
+- KOL/KOC名单可结合输入信息和行业常见类型。
+- 预算建议要合理
+""" 
+)  
 def refined_distribution_and_engagement_strategy(
     task: Dict[str, Any],
     trend_info: str = "",
@@ -73,15 +84,6 @@ def refined_distribution_and_engagement_strategy(
       - KOL/KOC初步合作方向和名单建议
       - 小额付费推广测试方案（平台、受众、形式、预算建议）
     """
-    system_prompt = """
-你是资深社交媒体内容分发与互动策略专家。请根据输入的内容任务、KPI目标、竞品趋势和受众信息，输出建议：
-要求：
-- 结合平台特性、内容主题、受众活跃时间、竞品做法和KPI目标，给出具体、可执行的建议。
-- #标签矩阵要覆盖品牌、活动、内容、热门、长尾五类。
-- 互动引导和UGC激励要有创意且易于执行。
-- KOL/KOC名单可结合输入信息和行业常见类型。
-- 预算建议要合理
-"""
     user_input = f"""
 内容任务:
 {json.dumps(task, ensure_ascii=False)}
@@ -97,11 +99,7 @@ def refined_distribution_and_engagement_strategy(
 """
     
     try:
-        response = dpsk_model.step(user_input)
-        content = response.msgs[0].content
-        # 清理可能的 markdown 代码块
-        if content.strip().startswith("```json"):
-            content = content.strip().split("```json")[-1].split("```")[0].strip()
-        return json.loads(content)
+        response = ot_agent.step(user_input)
+        return response.msgs[0].content
     except Exception as e:
         return {"error": str(e)}

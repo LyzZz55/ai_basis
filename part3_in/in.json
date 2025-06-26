@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "path": "outputs/Brand_Social_Media_Strategic_Playbook.md",
+      "comment": "Brand_Social_Media_Strategic_Playbook",
+      "type": "text"
+    },
+    {
+      "path": "outputs/Comprehensive_Market_And_Competitor_Intelligence_Report.md",
+      "comment": "Comprehensive_Market_And_Competitor_Intelligence_Report",
+      "type": "text"
+    },
+    {
+      "path": "outputs/Detailed_Target_Audience_Persona_Portfolio.md",
+      "comment": "Detailed_Target_Audience_Persona_Portfolio",
+      "type": "text"
+    },
+    {
+      "path": "outputs/Content_Idea_Repository.xlsx",
+      "comment": "Content_Idea_Repository",
+      "type": "excel"
+    }
+  ]
+}

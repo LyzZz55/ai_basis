@@ -16,14 +16,7 @@ from camel.types import ModelPlatformType, ModelType
 from camel.agents import ChatAgent
 import json
 
-
-import sys
-from pathlib import Path
-# 获取项目根目录并添加到sys.path
-project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
-sys.path.append(project_root)
-# 使用绝对导入
-from part_3.utils import clean_json_string
+from utils import clean_json_string
 
 import os
 from dotenv import load_dotenv
@@ -53,14 +46,12 @@ visual_trends_agent = ChatAgent(
 )  
 
 def research_visual_trends(
-    cur_brand_story: str,
-    cur_industry_analysis: str,
+    cur_brand_story_industry_analysis: str,
 ) -> dict:
   
     query = f"""  
     请研究行业的社交媒体视觉设计趋势。根据下面信息：
-    cur_brand_story:{cur_brand_story}
-    cur_industry_analysis:{cur_industry_analysis}
+    {cur_brand_story_industry_analysis}
     重点关注：  
     1. 当前流行的视觉设计元素  
     2. 色彩搭配趋势  

@@ -9,7 +9,7 @@ from pathlib import Path
 project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
 sys.path.append(project_root)
 # 使用绝对导入
-from part_3.utils import output
+from utils import output
 
 import textwrap
 
@@ -91,7 +91,7 @@ class KPIAnalysisAgent:
         result = benchmarks.get(platform, {}).get(kpi_type, "暂无基准数据")  
         return f"{platform}平台{kpi_type}基准: {result}"  
       
-    def expand_kpi_framework(self, simple_kpi_table: str, brand_info, content_calendar: str) -> str:  
+    def expand_kpi_framework(self, brand_info_simple_kpi_table: str, content_calendar: str) -> str:  
         """扩展KPI框架的主要方法"""  
         prompt = f"""  
   
@@ -111,11 +111,12 @@ class KPIAnalysisAgent:
         - 每个KPI的具体分析  
         
         
-        简单的KPI框架{simple_kpi_table}
+        根据
+        提供的品牌信息、简单的KPI框架：
+        {brand_info_simple_kpi_table}
         
-        根据提供的品牌信息：{brand_info}
-        
-        内容规划{content_calendar}
+        内容规划：
+        {content_calendar}
         """  
           
         response = self.agent.step(prompt)  
@@ -136,11 +137,11 @@ def create_kpi_analysis_agent():
     return KPIAnalysisAgent(model)
 
 
-def kpi_working(simple_kpi: str, brand_info: str, content_calendar: str):
+def kpi_working(brand_and_simple_kpi: str, content_calendar: str):
     kpi_agent = create_kpi_analysis_agent()
     
     # 执行KPI扩展分析  
-    expanded_analysis = kpi_agent.expand_kpi_framework(simple_kpi, brand_info, content_calendar)  
+    expanded_analysis = kpi_agent.expand_kpi_framework(brand_and_simple_kpi, content_calendar)  
     
     return expanded_analysis
 

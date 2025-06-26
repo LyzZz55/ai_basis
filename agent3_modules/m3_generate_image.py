@@ -23,13 +23,7 @@ from camel.toolkits import HumanToolkit
 from camel.agents import ChatAgent  
 from camel.models import ModelFactory
 
-import sys
-from pathlib import Path
-# 获取项目根目录并添加到sys.path
-project_root = str(Path(__file__).parent.parent.parent)  # 根据实际结构调整
-sys.path.append(project_root)
-# 使用绝对导入
-from part_3.utils import output
+from utils import output
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API")
@@ -267,6 +261,7 @@ class ImageGenerator:
             output("BLACK", f"生成图片的提示词: {full_prompt}, 图片将输出至：{output_path}", None, False)
             
             # 调用Gemini API生成图片
+            output("GREY", "生成图片 start")
             response = self.client.models.generate_content(
                 model=self.model_name,
                 contents=full_prompt,
@@ -274,6 +269,7 @@ class ImageGenerator:
                     response_modalities=['TEXT', 'IMAGE']
                 )
             )
+            output("GREY", "生成图片 end")
             
             # 处理返回结果
             image = self._process_response(response)
@@ -332,16 +328,19 @@ def generate_img(vi_system: str, img_requirement: str, output_path: str):
     image_gen = ImageGenerator(vi_system=vi_system)
     
     # 生成内容图片
+    output("GREY", "图片生成器 start")
     content_image = image_gen.generate_image_from_content(
         img_requirement,
         output_path=output_path + ".png"
     )
+    output("GREY", "图片生成器 接受数据")
     
     # 展示图片
     if content_image:
         print_img_to_terminal_through_img_path(output_path)
-        
         image_gen.iter_generate(img_requirement)
+    output("GREY", "图片生成器 end")
+    
  
     
 
