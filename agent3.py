@@ -214,7 +214,7 @@ def perform_part_three(part_3_input_config='part3_in/in.json', parent_out_path='
         # 主视觉生成
         output("GREY", "img start")
         img_prompt = generate_main_visual_for_task_prompt(single_task, vi_system=m2_out)
-        output("GREY", f"生成图片提示词: {img_prompt}")
+        # output("GREY", f"生成图片提示词: {img_prompt}")
         generate_img(img_prompt=img_prompt, output_name=single_task.get('task_name', "tmp_res"), parent_path=parent_out_path )
         output("GREY", "img end")
           

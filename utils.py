@@ -101,15 +101,7 @@ import json
 from typing import Dict, Any
 from termcolor import colored
 
-def output(color, msg, f=None, std_flag=1):
-    if std_flag:
-        print(colored(msg,color.lower()))
-    if f is not None:
-        f.write("--------"+color+"--------\n"
-            +msg
-            +"\n"
-        )
-    return
+
 
 def output(color,message,f=None,std_flag=1):
     if std_flag:

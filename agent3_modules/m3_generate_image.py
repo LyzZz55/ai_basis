@@ -40,7 +40,7 @@ dpsk_model = ModelFactory.create(
     model_type='Pro/deepseek-ai/DeepSeek-R1',
     model_config_dict={
         "max_tokens": 8192,
-        "temperature": 0.7
+        "temperature": 1.0
     },
     api_key=SF_API_KEY,
 )
@@ -182,20 +182,19 @@ def save_image(image: Image.Image, path: str) -> bool:
             return False
 
 class ImageGenerator:
-    """基于Gemini API和品牌VI系统的图片生成类"""
+    """基于 API 的图片生成类"""
     
-    def __init__(self, model_name: str = "gemini-2.0-flash-preview-image-generation", max_iteration: int = 5):
+    def __init__(self, max_iteration: int = 5):
         """
         初始化图片生成器
         
         参数:
             model_name: 使用的Gemini模型名称
         """
-        self.model_name = model_name
         self.human_iterater_agent = self._init_human_agent(dpsk_model)
         self.iteration = 0
         self.max_iteration = max_iteration
-        output("BLACK", f"图片生成器初始化完成，使用模型: {model_name}", None, False)
+        output("BLACK", f"图片生成器初始化完成", None, False)
     
     
     def _init_human_agent(self, model: str) -> ChatAgent:
@@ -242,20 +241,9 @@ class ImageGenerator:
             
             # 调用Gemini API生成图片
             output("GREY", "生成图片 start")
-            # response = self.client.models.generate_content(
-            #     model=self.model_name,
-            #     contents=full_prompt,
-            #     config=types.GenerateContentConfig(
-            #         response_modalities=['TEXT', 'IMAGE']
-            #     )
-            # )
-            # # 处理返回结果
-            # image = self._process_response(response)
-            # if image:
-            #     save_image(image, output_path)
-            # return image
+            
             output("GREY", '调用文生图API----sync call, please wait a moment----')
-            rsp = ImageSynthesis.call(api_key="",
+            rsp = ImageSynthesis.call(api_key=WANX_KEY,
                           model="wanx2.1-t2i-turbo",
                           prompt=full_prompt,
                           n=1,

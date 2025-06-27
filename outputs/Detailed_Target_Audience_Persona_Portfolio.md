@@ -1,33 +1,92 @@
-**Detailed Target Audience Persona Portfolio**  
+### Detailed Target Audience Persona Portfolio
 
-#### **Persona 1：技术信仰者 - 林薇（29岁，产品经理）**  
-![成分党画像](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmNWY1ZjUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIj5Db250ZW50IFNjaWVuY2UgRW50aHVzaWFzdDwvdGV4dD48L3N2Zz4=)  
-- **用户旅程地图（AIDA模型）**：  
-  | 阶段 | 行为 | 触点 |  
-  |---|---|---|  
-  | **注意** | 小红书搜索“抗氧化面膜排名” | 成分对比信息图 |  
-  | **兴趣** | 观看微囊化技术视频 | @成分侦探实验室实拍 |  
-  | **欲望** | 查美丽修行全成分表 | 第三方检测报告下载 |  
-  | **行动** | 会员日囤货（积分兑碳汇） | 官网碳足迹计算器 |  
+#### **Persona 1：科技成分党**  
+**基本信息**  
+![科技成分党画像]  
+- 姓名：林薇 | 年龄：29 | 职业：互联网产品经理  
+- 收入：月支配¥9,500+ | 城市：上海  
+- 产品关联：晨露平衡系列核心用户  
 
-#### **Persona 2：环保担当者 - 陈羽墨（35岁，可持续总监）**  
-![环保领袖画像](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlMGY0ZTAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIj5FbnZpcm9ubWVudGFsIEFkdm9jYXRlPC90ZXh0Pjwvc3ZnPg==)  
-- **用户旅程地图（AIDA模型）**：  
-  | 阶段 | 行为 | 触点 |  
-  |---|---|---|  
-  | **注意** | Instagram关注#可持续美妆 | B Corp认证页 |  
-  | **兴趣** | 比较空瓶回收计划 | 包装碳减排数据图 |  
-  | **欲望** | 妈妈群咨询安全性 | 儿童无害证明书 |  
-  | **行动** | 家庭囤购晨露系列 | 专属碳足迹报告 |  
+**核心特征**  
+- **价值观**："为实证买单"，业余研究化妆品配方  
+- **数字行为**：日均小红书47分钟，信任@Chemist_Angela  
+- **决策驱动**：功效实证(40%) > 成分透明(30%)  
+- **痛点**：无法即时验证产品宣称功效  
 
-#### **Persona 3：功效摇摆者 - 张晓雅（26岁，美术指导）**  
-![性价比追求者画像](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmMWU2Y2MiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIj5WYWx1ZS1Db25zY2lvdXMgU2hvcHBlcjwvdGV4dD48L3N2Zz4=)  
-- **用户旅程地图（AIDA模型）**：  
-  | 阶段 | 行为 | 触点 |  
-  |---|---|---|  
-  | **注意** | 抖音刷到熬夜挑战 | 3秒对比视频 |  
-  | **兴趣** | 搜索“面膜单次成本” | 分装试用装入口 |  
-  | **欲望** | 闺蜜咨询“值不值” | KOC打卡合集 |  
-  | **行动** | 购买七夕限定装 | 裂变折扣码 |  
+**用户旅程地图**  
+```mermaid
+journey
+    title 科技党决策路径
+    section 认知
+      抖音→微囊化渗透实验视频
+    section 兴趣
+      小红书→收藏3篇实验室测评
+    section 决策
+      美丽修行比价→选择评分4.72产品
+    section 行动
+      为"赠检测试纸"下单
+    section 忠诚
+      参与成分众测提案
+```
 
-###
+---
+
+#### **Persona 2：环保理念派**  
+**基本信息**  
+![环保理念派画像]  
+- 姓名：苏珊 | 年龄：35 | 职业：外企CSR总监  
+- 收入：家庭月¥65,000 | 城市：北京  
+- 产品关联：月光面膜高溢价接受者  
+
+**核心特征**  
+- **价值观**："可持续是高级奢侈"，零废弃生活实践者  
+- **数字行为**：活跃Instagram，关注碳足迹纪录片  
+- **决策驱动**：价值观契合(45%) > 产品体验(30%)  
+- **痛点**：无法量化单次护肤碳减排贡献  
+
+**用户旅程地图**  
+```mermaid
+journey
+    title 环保派决策路径
+    section 认知
+      行业报告→碳足迹关键词
+    section 兴趣
+      Instagram→查验公平贸易证明
+    section 决策
+      对比第三方审计文件
+    section 行动
+      为"1面膜=1棵云莓"下单
+    section 忠诚
+      空瓶兑换碳积分
+```
+
+---
+
+#### **Persona 3：过渡型学生党**  
+**基本信息**  
+![学生党画像]  
+- 姓名：陈敏 | 年龄：24 | 职业：生物学研究生  
+- 收入：月支配¥1,800 | 城市：广州  
+- 产品关联：会员体系增量目标  
+
+**核心特征**  
+- **价值观**："平替需达原版80%功效"  
+- **数字行为**：抖音/B站重度用户，关注平价测评  
+- **决策驱动**：性价比(50%) > 社交口碑(25%)  
+- **痛点**：无小规格尝鲜装（现有规格超半月生活费）  
+
+**用户旅程地图**  
+```mermaid
+journey
+    title 学生党决策路径
+    section 认知
+      抖音→学生预算分配视频
+    section 兴趣
+      搜索"月光面膜平替"
+    section 决策
+      计算单次成本（¥150=影院护理1/3）
+    section 行动
+      申请会员试用装
+    section 忠诚
+      通过校园大使转全价用户
+```

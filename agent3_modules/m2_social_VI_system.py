@@ -120,7 +120,7 @@ def m2(brand_info: str, target_audience: str, _trend_analyze) -> dict:
         model_type='Pro/deepseek-ai/DeepSeek-V3',
         model_config_dict={
             "max_tokens": 8192,
-            "temperature": 0.7
+            "temperature": 1.0
         },
         api_key=SF_API_KEY,
     )
