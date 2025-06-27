@@ -196,7 +196,7 @@ def perform_part_three(part_3_input_config='part3_in/in.json', parent_out_path='
     output("GREY", "contents_calendar_to_list end")
     for single_task in contents_list.get('tasks', []):
         human_input = input("是否继续(输入y表示继续生成, 其余字符表示不继续):")
-        if human_input is not 'y':
+        if human_input != 'y':
           break
         output("GREEN", f"{single_task}")
           
