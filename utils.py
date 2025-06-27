@@ -43,6 +43,35 @@ def build_automaton_from_file(wordlist_path="sys_in/sensitive-stop-words"):
     A.make_automaton()
     return A
 
+def is_english_word(text, start, end):
+    """检查是否为英文单词（使用Unicode属性判断）"""
+    # 检查匹配部分是否全部是英文字母
+    matched_part = text[start:end+1]
+    if not all('\u0041' <= c <= '\u005a' or '\u0061' <= c <= '\u007a' for c in matched_part):
+        return False
+    return True
+
+def is_whole_word_boundary(text, start, end):
+    """智能边界检查（仅对英文单词生效）"""
+    # 如果不是英文单词，则不检查边界（如中文）
+    if not is_english_word(text, start, end):
+        return True
+    
+    # 对英文单词进行边界检查
+    # 左边检查：起始位置或前一个字符是非字母和非中文
+    left_ok = (start == 0) or (
+        not text[start-1].isalpha() and 
+        not ('\u4e00' <= text[start-1] <= '\u9fff')  # 非中文
+    )
+    
+    # 右边检查：结束位置或后一个字符是非字母、非中文，允许紧跟标点
+    right_ok = (end == len(text)-1) or (
+        not text[end+1].isalpha() and 
+        not ('\u4e00' <= text[end+1] <= '\u9fff')  # 非中文
+    )
+    
+    return left_ok and right_ok
+
 def contains_sensitive_word(long_text: str, automaton: ahocorasick.Automaton):
     """
     检查长字符串中是否包含任何敏感词，并返回(是否包含, 敏感词列表)。
@@ -51,8 +80,10 @@ def contains_sensitive_word(long_text: str, automaton: ahocorasick.Automaton):
         print("AC自动机未初始化，无法进行查找。")
         return False, []
     found = set()
-    for end_idx, word in automaton.iter(long_text):
-        found.add(word)
+    for end_index, word in automaton.iter(long_text):
+        start_index = end_index - len(word)+1
+        if is_whole_word_boundary(long_text, start_index, end_index):
+            found.add(word)
     return (len(found) > 0), list(found)
     
 sensitive_word_automaton = build_automaton_from_file()
@@ -70,11 +101,20 @@ import json
 from typing import Dict, Any
 from termcolor import colored
 
+def output(color, msg, f=None, std_flag=1):
+    if std_flag:
+        print(colored(msg,color.lower()))
+    if f is not None:
+        f.write("--------"+color+"--------\n"
+            +msg
+            +"\n"
+        )
+    return
 
 def output(color,message,f=None,std_flag=1):
     if std_flag:
         print(colored(message,color.lower()))
-    if f is not None:
+    if f is not None and (not f.closed):
         f.write("--------"+color+"--------\n"
             +message
             +"\n"
@@ -90,7 +130,8 @@ def load_file_config(json_path: str) -> Dict[str, Any]:
 
 import pandas as pd
 from PIL import Image
-def load_files_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
+
+def load_files_from_config(config: Dict[str, Any], f=None,std_flag=1) -> Dict[str, Any]:
     """
     根据配置加载所有文件内容。
     """
@@ -110,10 +151,6 @@ def load_files_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
                     # 读取文件的全部内容为字符串
                     text_content = f.read()
 
-                has_sensitive, words = contains_sensitive_word(text_content, sensitive_word_automaton)
-                if has_sensitive:
-                    print("发现敏感词：", words)
-                    exit(1)
                 
                 # 直接将读取到的字符串内容存入字典
                 file_contents[comment] = {
@@ -127,10 +164,7 @@ def load_files_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
                 # 转为dict（sheet名: 行数据list[dict]）
                 excel_dict = {sheet: df.to_dict(orient="records") for sheet, df in excel_data.items()}
                 
-                has_sensitive, words = contains_sensitive_word(excel_dict, sensitive_word_automaton)
-                if has_sensitive:
-                    print("发现敏感词：", words)
-                    exit(1)
+                
                 file_contents[file_path] = {
                     "content": excel_dict,
                     "comment": comment,
@@ -145,17 +179,17 @@ def load_files_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
                 }
                 img.close()
             else:
-                output("RED", f"✘ 文件类型不明: {file_path}")
+                output("RED", f"✘ 文件类型不明: {file_path}", f,std_flag)
                 return {}
-            output("GREEN", f"✔ 已成功加载文件: '{file_path}' ({comment})")
+            output("GREEN", f"✔ 已成功加载文件: '{file_path}' ({comment})", f,std_flag)
         except FileNotFoundError:
-            output("RED", f"✘ 文件未找到: {file_path}")
+            output("RED", f"✘ 文件未找到: {file_path}", f,std_flag)
             return {}
         except UnicodeDecodeError:
-            output("RED", f"✘ 文件 '{file_path}' 不是有效的 UTF-8 编码，无法解析。")
+            output("RED", f"✘ 文件 '{file_path}' 不是有效的 UTF-8 编码，无法解析。", f,std_flag)
             return {}
         except Exception as e:
-            output("RED", f"✘ 加载文件 {file_path} 时发生未知错误: {e}")
+            output("RED", f"✘ 加载文件 {file_path} 时发生未知错误: {e}", f,std_flag)
             return {}
     print("✅ 所有输入文件加载完毕。")
     return file_contents
@@ -173,9 +207,9 @@ def save_to_file(content: str, *path_parts) -> None:
     if dir_path and not os.path.exists(dir_path):
         os.makedirs(dir_path, exist_ok=True)
     try:
-        with open(file_path, 'a', encoding='utf-8') as file:
+        with open(file_path, 'w', encoding='utf-8') as file:
             file.write(content)
-        print(f"内容已追加到文件: {file_path}")
+        print(f"内容已写入到文件: {file_path}")
     except Exception as e:
         print(f"写入文件时出错: {e}")
 

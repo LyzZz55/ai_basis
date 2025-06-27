@@ -68,7 +68,7 @@ def get_expert_statements(
     for agent_name, agent_instance in agents.items():
         response = agent_instance.agent.step(BaseMessage.make_user_message(role_name="Project Lead", content=initial_prompt))
         if response.msgs and response.msgs[0].content:
-            output("GREY", f"response.msgs[0].content")
+            output("GREY", f"{response.msgs[0].content}")
             statements.append(f"--- 来自 {agent_instance.name} 的观点 ---\n{response.msgs[0].content}")
     return "\n\n".join(statements)
 

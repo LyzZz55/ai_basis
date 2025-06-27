@@ -10,12 +10,13 @@ import os
 from typing import Dict, List, Union, Optional
 import json
 
-# Gemini API相关导入
-from google import genai
-from google.genai import types
-from io import BytesIO
-from PIL import Image
-import base64
+# 文生图 API相关导入
+from http import HTTPStatus
+from urllib.parse import urlparse, unquote
+from pathlib import PurePosixPath
+from dashscope import ImageSynthesis
+import requests
+
 
 
 from camel.types import ModelPlatformType, ModelType
@@ -85,19 +86,14 @@ def generate_visual_prompt(task, vi_system) -> str:
 - 适当遵循品牌VI系统的色彩、字体、图像风格等规范
 - 语言简洁、具体，能够直接输入文生图模型
 - 输出仅包含英文prompt，无需解释
-
+- 不要有任何关于具体比例等与GeminiAPI无关的提示
 任务条目，即需要生产主视觉图片的任务：
 {json.dumps(task, ensure_ascii=False)}
 
 品牌VI系统摘要：
 {json.dumps(vi_system, ensure_ascii=False)}
-9:16 vertical composition, with key elements concentrated in the upper-middle screen (avoiding obstruction by TikTok's bottom interactive bar).
-The microcapsule animation preview reflects the fast pace of a "30-second video," with arrow animations suggesting time flow (e.g., a left-to-right timeline light band).
-
-
 """
     return prompt
-
 def generate_main_visual_for_task_prompt(task, vi_system) -> str:
         """
         为单个内容日历条目生成主视觉图片，并返回图片路径
@@ -182,29 +178,20 @@ def save_image(image: Image.Image, path: str) -> bool:
 class ImageGenerator:
     """基于Gemini API和品牌VI系统的图片生成类"""
     
-    def __init__(self, vi_system: Dict, model_name: str = "gemini-2.0-flash-preview-image-generation", max_iteration: int = 5):
+    def __init__(self, model_name: str = "gemini-2.0-flash-preview-image-generation", max_iteration: int = 5):
         """
         初始化图片生成器
         
         参数:
-            vi_system: 品牌VI系统字典，包含色彩、图像风格等信息
             model_name: 使用的Gemini模型名称
         """
-        self.vi_system = vi_system
         self.model_name = model_name
-        self.client = self._init_client()
         self.human_iterater_agent = self._init_human_agent(dpsk_model)
         self.iteration = 0
         self.max_iteration = max_iteration
         output("BLACK", f"图片生成器初始化完成，使用模型: {model_name}", None, False)
     
-    def _init_client(self):
-        """初始化Gemini API客户端"""
-        try:
-            return genai.Client(api_key=GEMINI_API_KEY)
-        except Exception as e:
-            output("RED", f"初始化Gemini客户端失败: {e}", None, False)
-            raise
+    
     def _init_human_agent(self, model: str) -> ChatAgent:
         """
         创建并返回一个配置好人类交互工具的静态代理
@@ -217,7 +204,6 @@ class ImageGenerator:
             配置好的 ChatAgent 实例
         """
         # 创建带有人类交互工具的工具包
-        human_toolkit = HumanToolkit()
         
         return ChatAgent(
             system_message='''
@@ -227,20 +213,11 @@ class ImageGenerator:
                 如果你判断得到人类希望修改生成图片，提出了自己的要求，则你返回原图片生成提示词根据人类需求优化后的结果
             ''',
             model=model,
-            tools=[*human_toolkit.get_tools()]
         )
-    
-    def _match_VI_requirement(self, content:str) -> str:
-        return f'''
-            根据品牌的VI视觉特色生成满足描述的需要的图片
-            VI视觉特色: {self.vi_system}
-            需求描述: {content}
-            '''
     
     def generate_image_from_content(
         self,
         content: str,
-        isFullPrompt: bool = False,
         output_path: Optional[str] = "./tmpImg.png"
     ) -> Union[Image.Image, None]:
         """
@@ -254,39 +231,50 @@ class ImageGenerator:
         """
         try:
             # 构建完整提示词
-            if isFullPrompt:
-                full_prompt = content
-            else:
-                full_prompt = self._match_VI_requirement(content)
-            output("BLACK", f"生成图片的提示词: {full_prompt}, 图片将输出至：{output_path}", None, False)
+            full_prompt = content
+            output("BLACK", f"生成图片的提示词: {full_prompt}, 图片将输出至：{output_path}")
             
             # 调用Gemini API生成图片
             output("GREY", "生成图片 start")
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=full_prompt,
-                config=types.GenerateContentConfig(
-                    response_modalities=['TEXT', 'IMAGE']
-                )
-            )
-            output("GREY", "生成图片 end")
-            
-            # 处理返回结果
-            image = self._process_response(response)
-            if image:
-                save_image(image, output_path)
-                
-            return image
+            # response = self.client.models.generate_content(
+            #     model=self.model_name,
+            #     contents=full_prompt,
+            #     config=types.GenerateContentConfig(
+            #         response_modalities=['TEXT', 'IMAGE']
+            #     )
+            # )
+            # # 处理返回结果
+            # image = self._process_response(response)
+            # if image:
+            #     save_image(image, output_path)
+            # return image
+            output("GREY", '调用文生图API----sync call, please wait a moment----')
+            rsp = ImageSynthesis.call(api_key="sk-3108845e38c443a48db047aab876de10",
+                          model="wanx2.1-t2i-turbo",
+                          prompt=full_prompt,
+                          n=1,
+                          size='1024*1024')
+            output("GREY", 'response: %s' % rsp)
+            if rsp.status_code == HTTPStatus.OK:
+                # 在当前目录下保存图片
+                for result in rsp.output.results:
+                    with open(output_path, 'wb+') as f:
+                        f.write(requests.get(result.url).content)
+                return True
+            else:
+                output("RED", 'sync_call Failed, status_code: %s, code: %s, message: %s' %
+                    (rsp.status_code, rsp.code, rsp.message))
+            output("GREY", "文生图 end")
             
         except Exception as e:
             output("RED", f"生成图片失败: {e}", None, False)
             return None
     
     def iter_generate(self, original_requirement: str, output_path: str = "./tmpImg.png"):
-        original_prompt = self._match_VI_requirement(original_requirement)
+        original_prompt = original_requirement
         
         while self.iteration < self.max_iteration:
-            human_input = input("请输入您对于生成图片的反馈或改进需求")
+            human_input = input("请输入您对于生成图片的反馈或改进需求:")
             human_improve_user_msg = f'''
             原始提示词：{original_prompt}
             人类反馈：{human_input}
@@ -299,44 +287,21 @@ class ImageGenerator:
             else:
                 self.generate_image_from_content(out, True, output_path=output_path+self.iteration + ".png")
         
-    
-    def _process_response(self, response) -> Union[Image.Image, None]:
-        """处理Gemini API响应并提取图片"""
-        try:
-            if not response.candidates:
-                output("RED", "API响应中没有候选结果", None, False)
-                return None
-                
-            candidate = response.candidates[0]
-            for part in candidate.content.parts:
-                if part.inline_data is not None:
-                    image = Image.open(BytesIO(part.inline_data.data))
-                    output("BLACK", f"成功获取图片，尺寸: {image.size}", None, False)
-                    return image
-                    
-            output("BLACK", "响应中没有图片数据", None, False)
-            return None
-            
-        except Exception as e:
-            output("RED", f"处理API响应失败: {e}", None, False)
-            return None
-    
-    
-
-def generate_img(vi_system: str, img_requirement: str, output_path: str):
-    # 初始化图片生成器
-    image_gen = ImageGenerator(vi_system=vi_system)
+def generate_img(img_prompt: str, output_name: str, parent_path: str):
+    image_gen = ImageGenerator()
     
     # 生成内容图片
     output("GREY", "图片生成器 start")
+    output_dir = os.path.join(parent_path, output_name)
+    os.makedirs(output_dir, exist_ok=True)  # 保证父文件夹存在
+    output_path = os.path.join(output_dir, output_name + ".png")
     content_image = image_gen.generate_image_from_content(
-        img_requirement,
-        output_path=output_path + ".png"
+        img_prompt,
+        output_path=output_path
     )
-    output("GREY", "图片生成器 接受数据")
     
     # 展示图片
     if content_image:
         print_img_to_terminal_through_img_path(output_path)
-        image_gen.iter_generate(img_requirement)
+        image_gen.iter_generate(img_prompt)
     output("GREY", "图片生成器 end")

@@ -14,6 +14,9 @@ from camel.models import ModelFactory
 from camel.types import ModelPlatformType  
 from camel.toolkits import HumanToolkit
 
+from utils import  check_sensitive_word 
+
+
 def output(color,message,f,std_flag):
     if std_flag:
         print(colored(message,color.lower()))
@@ -53,7 +56,7 @@ def load_files_from_config(config: dict,f,std_flag) -> dict:
             } 
             output("BLACK","\'"+file_path+"\' read",None,True)
         except Exception as e:
-            output("BLACK",f"无法加载文件 {file_path}: {e}",f,std_flag)
+            output("BLACK",f"无法加载文件 {file_path}: {e}",None,std_flag)
             return {}
       
     return file_contents
@@ -62,7 +65,14 @@ def create_subtask_agents(json_config_path: str, model,f,std_flag):
     """创建六个子任务代理"""  
     # 加载文件配置和内容  
     config = load_file_config(json_config_path)  
-    file_contents = load_files_from_config(config,f,std_flag)  
+    file_contents = load_files_from_config(config,f,std_flag)
+    has_sensitive, words = check_sensitive_word(f"{file_contents}")
+    if has_sensitive:
+        output("RED", f"发现敏感词：{words}", None, 1)
+        exit(1)
+    else:
+        output("GREY", "没有发现敏感词, going on", None, 1)
+        
       
     # 构建文件信息字符串  
     files_info = "\n".join([  
@@ -442,8 +452,8 @@ def main(args):
     else:
         f=None
     load_dotenv(dotenv_path='.env')
-    api_key = os.getenv('SF_API')
-    output("BLACK","SF_API:%s"%(api_key),None,True)
+    api_key = os.getenv('SILICONFLOW_API_KEY')
+    output("BLACK","SILICONFLOW_API_KEY:%s"%(api_key),None,True)
 
     model = ModelFactory.create(  
         model_platform=ModelPlatformType.SILICONFLOW,  
@@ -480,6 +490,7 @@ def main(args):
         outf.write("=== 最终结果 ===\n")  
         outf.write(final_answer)  
     output("GREY","\n结果已保存到 "+args.output,f,args.std_flag)
-    f.close()
+    if f is not None:
+        f.close()
     return
 
