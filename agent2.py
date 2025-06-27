@@ -88,6 +88,8 @@ class ContentCreativityAgent:
         4.  只返回关键词本身，每个关键词占一行。
         内容主题是：
         "{topic}"
+        请严格遵循规则，完成给明的任务
+        
         """
         try:
             response = self._execute_prompt(seo_prompt)
@@ -120,6 +122,7 @@ class ContentCreativityAgent:
         3.  **输出格式**: 请严格按照以下格式，以Markdown表格形式返回这10个创意点，不要有任何解释或开场白。
         | Idea_ID | Creative_Title | Target_Persona | Core_Pillar | Brief_Description | Potential_Formats | Score_Brand_Fit (1-10) | Score_Audience_Attraction (1-10) | Score_Feasibility (1-10) |
         |---|---|---|---|---|---|---|---|---|
+        请严格遵循规则，完成给明的任务
         """
         response = self._execute_prompt(prompt)
         try:
@@ -161,6 +164,7 @@ class ContentCreativityAgent:
 
         ### 内容系列2: [系列名称]
         - **定位**: ...
+        请严格遵循规则，完成核心任务
         """
         response = self._execute_prompt(prompt)
         file_path = "outputs/Detailed_Content_Series_Blueprints.txt"
@@ -203,6 +207,7 @@ class ContentCreativityAgent:
         - **内容形式**: 
         - **优化重点**: 
         - **CTA (Call to Action)**: 
+        请严格遵循规则，完成核心任务
         """
         response = self._execute_prompt(prompt)
         file_path = "outputs/Cross-Platform_Content_Repurposing_Guide.txt"
@@ -245,6 +250,8 @@ class ContentCreativityAgent:
         ## 结论 (Conclusion)
         [总结全文，并给出强有力的结尾]
         - **CTA (Call to Action)**: [例如：立即访问官网，了解更多产品详情！]
+        请生成的内容不需要```md ```等类似的包围，直接生成所需内容
+        请严格遵循规则，完成核心任务
         """
         response = self._execute_prompt(prompt)
         sanitized_title = re.sub(r'[\\/*?:"<>|]', "", creative_title)
@@ -290,6 +297,7 @@ class ContentCreativityAgent:
         ### 测试衡量建议
         - **主要指标**: [例如：点击率 (CTR) 或 互动率 (Engagement Rate)]
         - **观察周期**: [例如：发布后24小时]
+        请严格遵循规则，完成核心任务
         """
         response = self._execute_prompt(prompt)
         file_path = "outputs/Draft_Copy_AB_Testing_Proposals.txt"
@@ -317,6 +325,7 @@ class ContentCreativityAgent:
         **输出格式**: 请严格以Markdown表格输出，不要包含任何解释或开场白。列名和顺序必须如下所示。请至少生成10-15条内容项。
         | Publish_Date | Publish_Time | Target_Platform | Content_Series | Content_Title | Main_Format | CTA | Notes |
         |---|---|---|---|---|---|---|---|
+        请严格遵循规则，完成核心任务
         """
         response = self._execute_prompt(prompt)
         try:
