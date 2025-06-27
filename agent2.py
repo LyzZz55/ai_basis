@@ -15,11 +15,13 @@ from camel.types import RoleType
 import utils
 
 # 用于读取api,我将自己的api放在了同目录下的key文件中,联合使用的时候api可以换成老师给的公用的api,基于SiliconFlow平台
+from dotenv import load_dotenv  
 try:
-    from key import key
+    load_dotenv(dotenv_path='.env')
+    api_key = os.getenv('SILICONFLOW_API_KEY')
+    utils.output("BLACK","SILICONFLOW_API_KEY:%s"%(api_key),None,True)
 except ImportError:
-    print("错误：无法从 key.py 导入 API 密钥。")
-    print("请创建一个名为 key.py 的文件，并在其中定义变量: key = '您的SiliconFlow_API密钥'")
+    print("错误：无法从 .env 导入 API 密钥。")
     exit()
 
 

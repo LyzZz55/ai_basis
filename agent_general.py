@@ -17,7 +17,7 @@ if __name__ == "__main__":
     main_start_time=time()
     parser=argparse.ArgumentParser(description="示例")
     parser.add_argument("-i","--input",dest="input",help="reference_list.json",required=True)
-    parser.add_argument("-o","--output",dest="output",help="output file, default to stdout",required=True)
+    parser.add_argument("-o","--output",dest="output",help="output file, default to stdout", default="part1_out.txt")
     parser.add_argument("-s","--std",dest="std_flag",help="1 for stdout, 0 for no stdout. default = 1 when arg -l not given, or 0 when arg -o given",default=None)
     parser.add_argument("-l","--log",dest="log",help="log_output",default=None)
     args=parser.parse_args()
@@ -28,7 +28,6 @@ if __name__ == "__main__":
     else:
         output("BLACK","invalid arg: -s --std, only accept '0' or '1'.",None,True)
         exit(1)
-
 
     agent1.main(args)
     agent_1_main_end_time=time()

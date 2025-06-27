@@ -26,9 +26,15 @@ from camel.models import ModelFactory
 
 from utils import output
 
-load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API")
-SF_API_KEY = os.getenv("FLOW_API")
+try:
+    load_dotenv()
+    GEMINI_API_KEY = os.getenv("GEMINI_API")
+    SF_API_KEY = os.getenv("FLOW_API")
+    WANX_KEY = os.getenv("WANX_KEY")
+except ImportError:
+    print("错误：无法从 .env 导入 API 密钥。")
+    exit()
+
 dpsk_model = ModelFactory.create(
     model_platform=ModelPlatformType.SILICONFLOW,
     model_type='Pro/deepseek-ai/DeepSeek-R1',
@@ -249,7 +255,7 @@ class ImageGenerator:
             #     save_image(image, output_path)
             # return image
             output("GREY", '调用文生图API----sync call, please wait a moment----')
-            rsp = ImageSynthesis.call(api_key="sk-3108845e38c443a48db047aab876de10",
+            rsp = ImageSynthesis.call(api_key="",
                           model="wanx2.1-t2i-turbo",
                           prompt=full_prompt,
                           n=1,
