@@ -40,7 +40,7 @@ dpsk_model = ModelFactory.create(
     model_type='Pro/deepseek-ai/DeepSeek-R1',
     model_config_dict={
         "max_tokens": 8192,
-        "temperature": 1.0
+        "temperature": 0.01
     },
     api_key=SF_API_KEY,
 )
@@ -279,7 +279,7 @@ class ImageGenerator:
                 output("BLACK", "图片生成，Agent判断出人类满意", None, False)
                 break
             else:
-                self.generate_image_from_content(out, True, output_path=output_path+self.iteration + ".png")
+                self.generate_image_from_content(out, output_path=output_path+str(self.iteration) + ".png")
         
 def generate_img(img_prompt: str, output_name: str, parent_path: str):
     image_gen = ImageGenerator()

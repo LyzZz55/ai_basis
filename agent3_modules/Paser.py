@@ -26,7 +26,7 @@ gemini_model = ModelFactory.create(
     model_type=ModelType.GEMINI_1_5_FLASH,
     model_config_dict={
         "max_tokens": 8192,
-        "temperature": 1.0
+        "temperature": 0.01
     },
     api_key=GEMINI_API_KEY
 )
@@ -35,7 +35,7 @@ dpskv3_model = ModelFactory.create(
     model_type='Pro/deepseek-ai/DeepSeek-R1',
     model_config_dict={
         "max_tokens": 8192,
-        "temperature": 1.0
+        "temperature": 0.01
     },
     api_key=SF_API_KEY,
 )

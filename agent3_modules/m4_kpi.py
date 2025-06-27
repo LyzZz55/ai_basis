@@ -129,7 +129,7 @@ def create_kpi_analysis_agent():
         model_type='Pro/deepseek-ai/DeepSeek-V3',
         model_config_dict={
             "max_tokens": 4096,
-            "temperature": 1.0
+            "temperature": 0.01
         },
         api_key=SF_API_KEY,
     )  

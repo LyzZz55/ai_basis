@@ -29,12 +29,12 @@ if __name__ == "__main__":
         output("BLACK","invalid arg: -s --std, only accept '0' or '1'.",None,True)
         exit(1)
 
-    # agent1.main(args)
+    agent1.main(args)
     agent_1_main_end_time=time()
-    # output("RED","agent One total time: %d"%(agent_1_main_end_time-main_start_time),None,True)
-    # # # agent 1 的输出的格式化
-    # agent_one_out_path = args.output
-    # process_and_save_delimited_blocks(agent_one_out_path, 3, "outputs", ["Comprehensive_Market_And_Competitor_Intelligence_Report", "Detailed_Target_Audience_Persona_Portfolio", "Brand_Social_Media_Strategic_Playbook"])
+    output("RED","agent One total time: %d"%(agent_1_main_end_time-main_start_time),None,True)
+    # agent 1 的输出的格式化
+    agent_one_out_path = args.output
+    process_and_save_delimited_blocks(agent_one_out_path, 3, "outputs", ["Comprehensive_Market_And_Competitor_Intelligence_Report", "Detailed_Target_Audience_Persona_Portfolio", "Brand_Social_Media_Strategic_Playbook"])
     
     # agent 2 
     agent2.main('part2_in/agent2_in.json')
