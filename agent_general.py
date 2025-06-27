@@ -47,4 +47,3 @@ if __name__ == "__main__":
     output("RED","agent Three total time: %d"%(agent_3_main_end_time-agent_2_main_end_time),None,True)
 
     
-    

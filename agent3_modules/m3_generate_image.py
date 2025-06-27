@@ -214,8 +214,8 @@ class ImageGenerator:
             system_message='''
             你是图片生成模块中人类反馈识别Agent
             你读取人类输入
-                如果你判断得到人类的表述为（对生成的图片）满意，没有希望修改某部分，则你返回一个'Over'，除此之外你在任何地方不能使用`Over`这个词
-                如果你判断得到人类希望修改生成图片，提出了自己的要求，则你返回原图片生成提示词根据人类需求优化后的结果
+                如果你判断得到人类的表述为（对生成的图片）满意，没有希望修改某部分，则你返回一个'Over@'，除此之外你在任何地方不能使用`Over`这个词
+                如果你判断得到人类希望修改生成图片(提出了自己的要求)，则你返回根据人类需求优化后的文生图提示词
             ''',
             model=model,
         )
@@ -264,22 +264,28 @@ class ImageGenerator:
             output("RED", f"生成图片失败: {e}", None, False)
             return None
     
-    def iter_generate(self, original_requirement: str, output_path: str = "./tmpImg.png"):
+    def iter_generate(self, original_requirement: str, output_parent_path: str, output_name: str):
         original_prompt = original_requirement
         
         while self.iteration < self.max_iteration:
             human_input = input("请输入您对于生成图片的反馈或改进需求:")
             human_improve_user_msg = f'''
-            原始提示词：{original_prompt}
+            原始文生图提示词：{original_prompt}
             人类反馈：{human_input}
             '''
+            output("GREY", f"图片生成, human_improve_user_msg：{human_improve_user_msg}")
+            
             out = self.human_iterater_agent.step(human_improve_user_msg).msgs[0].content
             self.iteration += 1
-            if 'Over' in out:
-                output("BLACK", "图片生成，Agent判断出人类满意", None, False)
+            if 'Over@' in out:
+                output("BLACK", "图片生成：Agent判断出人类满意", None, False)
                 break
             else:
-                self.generate_image_from_content(out, output_path=output_path+str(self.iteration) + ".png")
+                output("BLACK", "图片生成：Agent判断出人类需要进一步操作", None, False)
+                output_path = os.path.join(output_parent_path, output_name + str(self.iteration) + ".png")
+                content_image = self.generate_image_from_content(out, output_path=output_path)
+                if content_image:
+                    print_img_to_terminal_through_img_path(output_path)
         
 def generate_img(img_prompt: str, output_name: str, parent_path: str):
     image_gen = ImageGenerator()
@@ -297,5 +303,6 @@ def generate_img(img_prompt: str, output_name: str, parent_path: str):
     # 展示图片
     if content_image:
         print_img_to_terminal_through_img_path(output_path)
-        image_gen.iter_generate(img_prompt)
+        image_gen.iter_generate(img_prompt, output_parent_path=output_dir, output_name=output_name)
     output("GREY", "图片生成器 end")
+
