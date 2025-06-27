@@ -390,7 +390,7 @@ def main(input_config_path: str):
         model_type=SILICONFLOW_MODEL_NAME,
         url=SILICONFLOW_API_URL,
         api_key=key,
-        model_config_dict={"stream": True, "temperature": 0.75, "max_tokens": 4096, "timeout": 120}
+        model_config_dict={"stream": True, "temperature": 0.75, "max_tokens": 8080, "timeout": 120}
         # 这里temperature可以随意调节,我尝试了0.5-1.2, 停留在0.75, 事实上0.7也是一个不错的选择
     )
 

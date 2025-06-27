@@ -30,7 +30,7 @@ if __name__ == "__main__":
         exit(1)
 
 
-    # agent1.main(args)
+    agent1.main(args)
     agent_1_main_end_time=time()
     output("RED","agent One total time: %d"%(agent_1_main_end_time-main_start_time),None,True)
     # # agent 1 的输出的格式化
@@ -43,10 +43,9 @@ if __name__ == "__main__":
     output("RED","agent Two total time: %d"%(agent_2_main_end_time-agent_1_main_end_time),None,True)
     
     # agent 3
-    # agent3.perform_part_three(part_3_input_config='part3_in/in.json', parent_out_path='outputs')
-    # agent_3_main_end_time=time()
-    # output("RED","agent Three total time: %d"%(agent_3_main_end_time-agent_2_main_end_time),None,True)
-    
-    
+    agent3.perform_part_three(part_3_input_config='part3_in/in.json', parent_out_path='outputs')
+    agent_3_main_end_time=time()
+    output("RED","agent Three total time: %d"%(agent_3_main_end_time-agent_2_main_end_time),None,True)
+
     
     

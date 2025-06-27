@@ -277,7 +277,6 @@ def execute_subtasks_automatically(agents, main_task_content,f,std_flag):
   
 请基于已提供的文件信息和前序任务结果完成这个子任务。  
 """  
-          
         # 执行任务  
         start_time=time()
         response = agent.step(task_prompt)  
@@ -286,7 +285,7 @@ def execute_subtasks_automatically(agents, main_task_content,f,std_flag):
         output("GREY",f"✓ 子任务 {i+1} 完成\n",f,std_flag) 
         end_time=time()
         output("RED","time cost: %d"%(end_time-start_time),f,std_flag)
-      
+    
     # 整合所有结果生成基础回答  
     base_answer = f""" 
 前5个子任务的分析结果如下：
