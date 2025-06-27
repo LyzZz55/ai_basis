@@ -2,52 +2,58 @@
 # for alpha ver 1.15.0+ [Main] Agent 2
 
 import ahocorasick
-def build_automaton_from_file(wordlist_path="sys_in/sensitive_words.txt"):
-    """
-    从文件读取敏感词并构建AC自动机。
-    """
-    # 实例化一个AC自动机
-    A = ahocorasick.Automaton()
+import os
 
-    # 从文件中读取每个词并添加到自动机中
-    try:
-        with open(wordlist_path, "r", encoding="utf-8") as f:
-            for line in f:
-                word = line.strip()
-                if word:  # 确保行不为空
-                    A.add_word(word, word)
-    except FileNotFoundError:
-        print(f"错误：敏感词库文件 '{wordlist_path}' 未找到。")
+def build_automaton_from_file(wordlist_path="sys_in/sensitive-stop-words"):
+    """
+    从文件或文件夹递归读取敏感词并构建AC自动机。
+    - 如果是文件，逐行读取词条；
+    - 如果是文件夹，递归读取所有 .txt 文件，合并所有词条。
+    """
+    A = ahocorasick.Automaton()
+    words = set()
+
+    def read_words_from_file(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    word = line.strip()
+                    if word:
+                        words.add(word)
+        except Exception as e:
+            print(f"读取敏感词文件 '{file_path}' 时出错: {e}")
+
+    if os.path.isfile(wordlist_path):
+        read_words_from_file(wordlist_path)
+    elif os.path.isdir(wordlist_path):
+        for root, _, files in os.walk(wordlist_path):
+            for fname in files:
+                if fname.lower().endswith('.txt'):
+                    read_words_from_file(os.path.join(root, fname))
+    else:
+        print(f"错误：敏感词路径 '{wordlist_path}' 不存在。")
         return None
-    
-    # 构建AC自动机，建立失败指针
+
+    if not words:
+        print(f"警告：敏感词文件为空。")
+        return None
+
+    for word in words:
+        A.add_word(word, word)
     A.make_automaton()
     return A
 
-def contains_sensitive_word(long_text: str, automaton: ahocorasick.Automaton) -> bool:
+def contains_sensitive_word(long_text: str, automaton: ahocorasick.Automaton):
     """
-    使用构建好的AC自动机检查长字符串中是否包含任何敏感词。
-    
-    参数:
-    long_text (str): 需要检查的输入字符串。
-    automaton (ahocorasick.Automaton): 预先构建好的AC自动机实例。
-    
-    返回:
-    bool: 如果找到任何敏感词，返回 True；否则返回 False。
+    检查长字符串中是否包含任何敏感词，并返回(是否包含, 敏感词列表)。
     """
     if not automaton:
         print("AC自动机未初始化，无法进行查找。")
-        return False
-        
-    # A.iter() 返回一个迭代器，(end_index, value)
-    # 我们只需要知道是否存在匹配，而不需要知道具体是哪个词或在哪里。
-    # 所以，只要迭代器能返回第一个值，就说明存在匹配。
-    try:
-        next(automaton.iter(long_text))
-        return True
-    except StopIteration:
-        # 如果迭代器为空（即没有找到任何匹配），会立即触发StopIteration异常
-        return False
+        return False, []
+    found = set()
+    for end_idx, word in automaton.iter(long_text):
+        found.add(word)
+    return (len(found) > 0), list(found)
     
 sensitive_word_automaton = build_automaton_from_file()
 def check_sensitive_word(s: str):
@@ -104,10 +110,12 @@ def load_files_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
                     # 读取文件的全部内容为字符串
                     text_content = f.read()
 
+                has_sensitive, words = contains_sensitive_word(text_content, sensitive_word_automaton)
+                if has_sensitive:
+                    print("发现敏感词：", words)
+                    exit(1)
+                
                 # 直接将读取到的字符串内容存入字典
-                if check_sensitive_word(text_content):
-                    output("RED", f"读取到了敏感词!在文本{text_content}中")
-                    return {}
                 file_contents[comment] = {
                     "content": text_content,  # 直接使用读取到的字符串
                     "path": file_path,
@@ -118,9 +126,11 @@ def load_files_from_config(config: Dict[str, Any]) -> Dict[str, Any]:
                 excel_data = pd.read_excel(file_path, sheet_name=None, engine="openpyxl")
                 # 转为dict（sheet名: 行数据list[dict]）
                 excel_dict = {sheet: df.to_dict(orient="records") for sheet, df in excel_data.items()}
-                if check_sensitive_word(excel_dict):
-                    output("RED", f"读取到了敏感词!在excel解析结果{excel_dict}中")
-                    return {}
+                
+                has_sensitive, words = contains_sensitive_word(excel_dict, sensitive_word_automaton)
+                if has_sensitive:
+                    print("发现敏感词：", words)
+                    exit(1)
                 file_contents[file_path] = {
                     "content": excel_dict,
                     "comment": comment,

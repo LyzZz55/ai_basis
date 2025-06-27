@@ -98,8 +98,6 @@ def contents_calendar_to_list(marketing_plan_text)-> dict:
     output("BLACK", "End: 分析营销计划", None, False)
     return json.loads(response.msgs[0].content)
 
-
-
 import re
 def extract_content_between_delimiters(input_str: str, N: int) -> list[str]:
     """

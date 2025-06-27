@@ -340,9 +340,3 @@ def generate_img(vi_system: str, img_requirement: str, output_path: str):
         print_img_to_terminal_through_img_path(output_path)
         image_gen.iter_generate(img_requirement)
     output("GREY", "图片生成器 end")
-    
- 
-    
-
-
-

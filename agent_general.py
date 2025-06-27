@@ -50,6 +50,8 @@ if __name__ == "__main__":
     
     # agent 3
     # agent3.perform_part_three(part_3_input_config='part3_in/in.json', parent_out_path='outputs')
+    # agent_3_main_end_time=time()
+    # output("RED","agent Three total time: %d"%(agent_3_main_end_time-agent_2_main_end_time),None,True)
     
     
     
